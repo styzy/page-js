@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="../js/page.child.js"></script>
+    <title>相同链接，不同参数</title>
+    <script>
+        window.addEventListener('load', function() {
+
+            setTitle()
+            showUrl()
+
+            function setTitle() {
+                document.title = Math.random().toString()
+            }
+
+
+            function showUrl() {
+                var el_url = document.querySelector('#url')
+                el_url.innerText = '当前子页面url：' + window.location.href
+            }
+        })
+    </script>
+</head>
+
+<body>
+    <h1>相同链接，不同参数</h1>
+    <div id="url"></div>
+    <h2>动态替换当前页面title</h2>
+</body>
+
+</html>

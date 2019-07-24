@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="../js/page.child.js"></script>
+    <title>基本方法</title>
+</head>
+
+<body>
+    <h1>基本方法</h1>
+    <h3>高度同步</h3>
+    <button type="button" onclick="setHeight()">设置高度</button>
+    <button type="button" onclick="syncHeight()">同步高度</button>
+    <h3>通信</h3>
+    <input type="text" id="msgValue">
+    <button type="button" onclick="sendMsg()">发送消息给parent</button>
+    <p>请打开控制台查看</p>
+    <br>
+    <input type="text" id="msgValue1">
+    <button type="button" onclick="sendMsg1()">发送消息给第一个页面</button>
+    <p>在第一个页面查看接收的消息</p>
+    <script>
+        window.init = function(page, globalPayload, pagePayload, config) {
+            window.setHeight = function() {
+                document.body.style.height = parseInt(window.getComputedStyle(document.documentElement)['height']) + 1000 + 'px'
+            }
+
+            window.syncHeight = function() {
+                page.syncHeight()
+            }
+
+            window.sendMsg = function() {
+                var val = document.querySelector('#msgValue').value
+                page.postMessage(val)
+            }
+            window.sendMsg1 = function() {
+                var val = document.querySelector('#msgValue1').value
+                page.postMessage(val, pagePayload.homePageId)
+            }
+        }
+    </script>
+</body>
+
+</html>

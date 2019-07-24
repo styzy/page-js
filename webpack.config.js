@@ -1,16 +1,19 @@
 const path = require('path')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const webpackConfig = {
     entry: {
-        index: './src/index.js'
+        'page.parent': './src/js/parent/index.js',
+        'page.child': './src/js/child/index.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: (chunkData) => {
-            return `${chunkData.chunk.name}.bundle.js`
-        }
+        filename: 'js/[name].js'
+    },
+    devServer: {
+        openPage: 'index.html'
     },
     module: {
         rules: [{
@@ -24,13 +27,19 @@ const webpackConfig = {
             {
                 test: /\.css$/,
                 use: [
-                    { loader: 'style-loader', options: { sourceMap: true } },
-                    { loader: 'css-loader' }
+                    { loader: MiniCssExtractPlugin.loader },
+                    { loader: 'css-loader' },
+                    { loader: 'postcss-loader' },
                 ]
             },
             {
-                test: /\.stylus$/,
-                loader: 'style-loader!css-loader!stylus-loader',
+                test: /\.styl$/,
+                use: [
+                    { loader: MiniCssExtractPlugin.loader },
+                    { loader: 'css-loader' },
+                    { loader: 'postcss-loader' },
+                    { loader: 'stylus-loader' }
+                ]
             },
             {
                 test: /\.(gif|jpg|jpeg|png|svg|ttf)$/,
@@ -43,15 +52,43 @@ const webpackConfig = {
     },
     plugins: [
         new UglifyJSPlugin(),
+        new MiniCssExtractPlugin({
+            filename: 'css/[name].css',
+            chunkFilename: '[id].css',
+            ignoreOrder: false, // Enable to remove warnings about conflicting order
+        }),
         new HtmlWebpackPlugin({
-            title: 'es7-cli',
-            template: 'index.html',
+            filename: 'index.html',
+            chunks: ['page.parent'],
+            title: 'Page 前端标签页框架',
+            template: './src/template/index.html',
+            inject: 'head',
             hash: true,
-            // filename: './dist/index.html',
-            minify: {
-                removeComments: true, // 去除注释
-                collapseWhitespace: true //是否去除空格
-            }
+            minify: false
+        }),
+        new HtmlWebpackPlugin({
+            filename: './module/home.html',
+            chunks: ['page.child'],
+            template: './src/template/module/home.html',
+            inject: 'head',
+            hash: true,
+            minify: false
+        }),
+        new HtmlWebpackPlugin({
+            filename: './module/module1.html',
+            chunks: ['page.child'],
+            template: './src/template/module/module1.html',
+            inject: 'head',
+            hash: true,
+            minify: false
+        }),
+        new HtmlWebpackPlugin({
+            filename: './module/module2.html',
+            chunks: ['page.child'],
+            template: './src/template/module/module2.html',
+            inject: 'head',
+            hash: true,
+            minify: false
         })
     ]
 }
