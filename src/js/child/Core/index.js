@@ -9,7 +9,7 @@ const Core = function(initCallback) {
         if (isOpenByPage) {
             initByParent(initCallback)
         } else {
-            initByParent(initCallback)
+            initAlone()
         }
     } else {
         initAlone()

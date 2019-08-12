@@ -91,6 +91,9 @@
         <a href="javascript:void(0);" onclick="closeAllPage()">
             <div class="link">关闭所有页面</div>
         </a>
+        <a href="javascript:void(0);" onclick="openByNative()">
+            <div class="link">原生iframe打开</div>
+        </a>
     </div>
     <div class="right">
         <div id="pageTitleCtn" class="page-title-ctn">
@@ -254,6 +257,12 @@
 
         function closeAllPage() {
             page.closeAll()
+        }
+
+        function openByNative() {
+            var el_iframe = document.createElement('iframe')
+            el_iframe.src = 'module/module1.html'
+            document.body.appendChild(el_iframe)
         }
     </script>
 </body>
