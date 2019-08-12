@@ -1,10 +1,10 @@
 import Config from '../Config'
-import Router from './Router';
+import Log from '../Log'
+import constants from '../../constants'
+import Router from './Router'
 import Route from './Route'
 import Page from './Page'
 import ContextMenu from './ContextMenu'
-import Log from '../Log';
-import constants from '../../constants'
 import { replaceAll } from '../utils'
 
 // 核心类定义

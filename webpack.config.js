@@ -10,7 +10,7 @@ const webpackConfig = {
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'js/[name].js'
+        filename: 'js/[name].min.js'
     },
     devServer: {
         openPage: 'index.html'
