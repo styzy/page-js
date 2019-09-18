@@ -1,11 +1,7 @@
 const constants = {
     selector: {
         // 路由元素
-        routeEl: '[page-href]',
-        // 标题容器
-        titleContainer: '#pageTitleCtn',
-        // 页面容器
-        viewContainer: '#pageIframeCtn'
+        routeEl: '[page-href]'
     },
     className: {
         titleContainer: 'page-title-container',

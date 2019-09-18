@@ -1,4 +1,4 @@
-import Config from '../Config'
+import { Config, defaultConfig } from '../Config'
 import Log from '../Log'
 import constants from '../../constants'
 import Router from './Router'
@@ -9,12 +9,6 @@ import { replaceAll } from '../utils'
 
 // 核心类定义
 const Core = function(userConfig) {
-    this.config = new Config(userConfig)
-    if (!this.config) {
-        return false
-    }
-    this.log = new Log(this.config.devMode)
-
     let _this = this
     let _private = {}
 
@@ -46,14 +40,15 @@ const Core = function(userConfig) {
     }
 
     // container
-    this.setTitleContainerInstance = setTitleContainer
+    _private.init = init
+    _private.setTitleContainerInstance = setTitleContainer
     this.getTitleContainerInstance = getTitleContainer
-    this.setTitleWrapperInstance = setTitleWrapper
+    _private.setTitleWrapperInstance = setTitleWrapper
     this.getTitleWrapperInstance = getTitleWrapper
-    this.setTitleMoreInstance = setTitleMore
-    this.getTitleMoreInstance = getTitleMore
-    this.setViewContainerInstance = setViewContainer
+    _private.setViewContainerInstance = setViewContainer
     this.getViewContainerInstance = getViewContainer
+    _private.setTitleMoreInstance = setTitleMore
+    this.getTitleMoreInstance = getTitleMore
 
     // 数据方法
     this.currentId = currentId
@@ -94,12 +89,26 @@ const Core = function(userConfig) {
     // 工具
     this.setPagePayloadByRouteId = setPagePayloadByRouteId
     this.pageLimitCheck = pageLimitValidator
-    this.titleMoreHandler = titleMoreHandler
+    _private.titleMoreHandler = titleMoreHandler
     this.getTitleMoreShowState = getTitleMoreShowState
     _private.messageReceiver = messageReceiver
 
     // 开启对currentPageId的监听
     _private.currentPageIdWatcher();
+
+    // 实例化config
+    this.config = new Config(userConfig)
+    if (!this.config) {
+        return false
+    }
+
+    // 实例化log
+    this.log = new Log(this.config.devMode)
+
+    // 初始化
+    if (!init()) {
+        return false
+    }
 
     // 实例化Router
     this.router = new Router(this)
@@ -112,6 +121,8 @@ const Core = function(userConfig) {
 
     // devMode开启时window挂载开发数据
     if (this.config.devMode) {
+        // 显示帮助信息
+        showHelpInfo()
         window[constants.devModeWindowDataName] = {
             instances: instances,
             instanceCount: instanceCount,
@@ -124,6 +135,96 @@ const Core = function(userConfig) {
     return this.router
 
     // ************方法声明************
+
+    /**
+     * 初始化方法
+     */
+    function init() {
+        let initResult = initTitleCtn() && initViewCtn() && initRoute()
+        return initResult
+
+        // 初始化跳转路由
+        function initRoute() {
+            var el_routes = document.querySelectorAll(constants.selector.routeEl)
+            for (var i = 0; i < el_routes.length; i++) {
+                var el = el_routes[i]
+                el.addEventListener('click', function() {
+                    bindElClick.call(this)
+                })
+            }
+            return true
+
+            function bindElClick() {
+                if (!_this.router) {
+                    return false
+                }
+                var options = {
+                    url: this.getAttribute(constants.attributeName.routeUrl),
+                    title: this.getAttribute(constants.attributeName.routeTitle),
+                    icon: this.getAttribute(constants.attributeName.routeIcon),
+                    iconfont: this.getAttribute(constants.attributeName.routeIconfont),
+                    userClose: !(this.getAttribute(constants.attributeName.routeDisableClose) === 'true'),
+                    repeatEnable: this.getAttribute(constants.attributeName.routeRepeatEnable) === 'true',
+                    syncHeight: !(this.getAttribute(constants.attributeName.syncHeight) === 'false'),
+                    onLoad: this.getAttribute(constants.attributeName.routeOnLoad) || null,
+                    onClose: this.getAttribute(constants.attributeName.routeOnClose) || null
+                }
+                if (options.title === 'false') {
+                    options.title = false
+                } else if (!options.title) {
+                    options.title = options.url
+                }
+                _this.router.open(options)
+            }
+        }
+
+        // 初始化标题栏
+        function initTitleCtn() {
+            let titleParam = _this.config.titleContainer,
+                el_title_ctn = null
+            if (typeof titleParam === 'string') {
+                el_title_ctn = document.querySelector(titleParam)
+            } else if (titleParam instanceof HTMLElement) {
+                el_title_ctn = titleParam
+            } else {
+                _this.log.error('标题栏实例化失败，错误的titleContainer参数:\n', titleParam)
+                return false
+            }
+            el_title_ctn.className = el_title_ctn.className + ' ' + constants.className.titleContainer
+            _private.setTitleContainerInstance(el_title_ctn)
+            var el_title_warp = document.createElement("div")
+            el_title_warp.className = constants.className.titleWrapper
+            el_title_ctn.appendChild(el_title_warp)
+            _private.setTitleWrapperInstance(el_title_warp)
+            var el_title_more = document.createElement("div")
+            el_title_more.className = constants.className.titleMore
+            el_title_more.addEventListener('click', function() {
+                _private.titleMoreHandler()
+                if (!_this.getTitleMoreShowState()) {
+                    _this.getPageInstanceIdList()[0] && _this.getPageInstance(_this.getPageInstanceIdList()[0]).title.titleMoreCheck()
+                }
+            })
+            el_title_warp.appendChild(el_title_more)
+            _private.setTitleMoreInstance(el_title_more)
+            return true
+        };
+
+        // 初始化iframe容器
+        function initViewCtn() {
+            let viewParam = _this.config.viewContainer,
+                el_view_ctn = null
+            if (typeof viewParam === 'string') {
+                el_view_ctn = document.querySelector(viewParam)
+            } else if (viewParam instanceof HTMLElement) {
+                el_view_ctn = viewParam
+            } else {
+                _this.log.error('视图实例化失败，错误的viewContainer参数:\n', viewParam)
+                return false
+            }
+            _private.setViewContainerInstance(el_view_ctn)
+            return true
+        }
+    }
 
     /**
      * 设置titleContainer
@@ -513,4 +614,38 @@ const Core = function(userConfig) {
     }
 }
 
+function showHelpInfo() {
+    let helpInfo = '%c********Page标签页框架帮助********\n' +
+        '\n输入对应的命令查看帮助(本帮助功能仅在devMode下有效):\n' +
+        '\n1.查看实例化配置\n' +
+        'Page.api.showConfig()\n' +
+        '\n2.查看父页面路由方法\n' +
+        'Page.api.showParentRouter()\n' +
+        '\n3.查看子页面路由方法\n' +
+        'Page.api.showParentRouter()\n' +
+        '\n********************************'
+    let helpStyle = 'color:#00a1d6;'
+    console.log(helpInfo, helpStyle)
+
+    // 挂载API文档
+    Core.api = {
+        showConfig: showConfig
+    }
+}
+
+function showConfig() {
+    let api = {}
+    for (const key in defaultConfig) {
+        if (defaultConfig.hasOwnProperty(key)) {
+            let ValidType = defaultConfig[key].type
+            if (ValidType) {
+                ValidType = typeof ValidType === 'object' ? ValidType.map(type => type.name).join(',') : ValidType.name
+            } else {
+                ValidType = '无限制'
+            }
+            api[key] = Object.assign({}, defaultConfig[key], { type: ValidType })
+        }
+    }
+    console.table(api, ['type', 'default', 'desc'])
+}
 export default Core

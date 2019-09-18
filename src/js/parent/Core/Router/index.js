@@ -4,11 +4,6 @@ import constants from '../../../constants'
 const Router = function(core) {
     let _this = this
 
-    // 初始化
-    if (!init()) {
-        return false
-    }
-
     // 公有方法
     this.open = open
     this.close = close
@@ -17,86 +12,6 @@ const Router = function(core) {
     this.recoverCache = recoverCache
     this.clearCache = clearCache
     this.syncHeightByPageId = syncHeightByPageId
-
-    // 初始化方法
-    function init() {
-        try {
-            initTitleCtn();
-            initViewCtn();
-            initRoute();
-            return true;
-        } catch (e) {
-            core.log.error('初始化失败\n' + e);
-            return false
-        }
-
-        // 初始化跳转路由
-        function initRoute() {
-            var el_routes = document.querySelectorAll(constants.selector.routeEl)
-            for (var i = 0; i < el_routes.length; i++) {
-                var el = el_routes[i]
-                el.addEventListener('click', function() {
-                    bindElClick.call(this)
-                })
-            }
-
-            function bindElClick() {
-                if (!core.router) {
-                    return false
-                }
-                var options = {
-                    url: this.getAttribute(constants.attributeName.routeUrl),
-                    title: this.getAttribute(constants.attributeName.routeTitle),
-                    icon: this.getAttribute(constants.attributeName.routeIcon),
-                    iconfont: this.getAttribute(constants.attributeName.routeIconfont),
-                    userClose: !(this.getAttribute(constants.attributeName.routeDisableClose) === 'true'),
-                    repeatEnable: this.getAttribute(constants.attributeName.routeRepeatEnable) === 'true',
-                    syncHeight: !(this.getAttribute(constants.attributeName.syncHeight) === 'false'),
-                    onLoad: this.getAttribute(constants.attributeName.routeOnLoad) || null,
-                    onClose: this.getAttribute(constants.attributeName.routeOnClose) || null
-                }
-                if (options.title === 'false') {
-                    options.title = false
-                } else if (!options.title) {
-                    options.title = options.url
-                }
-                core.router.open(options)
-            }
-        };
-
-        // 初始化标题栏
-        function initTitleCtn() {
-            var el_title_ctn = document.querySelectorAll(constants.selector.titleContainer)[0]
-            if (!el_title_ctn) {
-                core.log.error('标题栏实例化失败，未找到id为' + constants.selector.titleContainer + '的元素')
-            }
-            el_title_ctn.className = el_title_ctn.className + ' ' + constants.className.titleContainer
-            core.setTitleContainerInstance(el_title_ctn)
-            var el_title_warp = document.createElement("div")
-            el_title_warp.className = constants.className.titleWrapper
-            el_title_ctn.appendChild(el_title_warp)
-            core.setTitleWrapperInstance(el_title_warp)
-            var el_title_more = document.createElement("div")
-            el_title_more.className = constants.className.titleMore
-            el_title_more.addEventListener('click', function() {
-                core.titleMoreHandler()
-                if (!core.getTitleMoreShowState()) {
-                    core.getPageInstanceIdList()[0] && core.getPageInstance(core.getPageInstanceIdList()[0]).title.titleMoreCheck()
-                }
-            })
-            el_title_warp.appendChild(el_title_more)
-            core.setTitleMoreInstance(el_title_more)
-        };
-
-        // 初始化iframe容器
-        function initViewCtn() {
-            var el_view_ctn = document.querySelectorAll(constants.selector.viewContainer)[0]
-            if (!el_view_ctn) {
-                core.log.error('页面容器实例化失败，未找到id为' + constants.selector.viewContainer + '的元素')
-            }
-            core.setViewContainerInstance(el_view_ctn)
-        };
-    };
 
     /**
      * 打开页面
