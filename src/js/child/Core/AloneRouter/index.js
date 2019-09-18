@@ -9,6 +9,9 @@ const AloneRouter = function() {
     this.clearCache = empty
     this.closeSelf = window.close
     this.getPageId = empty
+    this.getPageData = empty
+    this.getGlobalData = empty
+    this.getConfig = empty
     this.syncHeight = empty
     this.postMessage = empty
 
