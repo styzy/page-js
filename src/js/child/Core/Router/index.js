@@ -1,7 +1,11 @@
 import constants from '../../../constants'
 
-const Router = function(parentRouter) {
-    var pageId = window.name
+const Router = function() {
+    let payload = window.top[constants.parentPayloadName]
+    let parentCore = payload.core
+    let parentRouter = parentCore.router
+    let pageId = window.name
+    let routeId = parentCore.getPageInstance(pageId).routeId
 
     this.open = parentRouter.open
     this.close = parentRouter.close
@@ -10,6 +14,9 @@ const Router = function(parentRouter) {
     this.clearCache = parentRouter.clearCache
     this.closeSelf = closeSelf
     this.getPageId = getPageId
+    this.getPageData = getPagePayload
+    this.getGlobalData = getGlobalPayload
+    this.getConfig = getConfig
     this.syncHeight = syncHeight
     this.postMessage = postMessage
     this.messageReciver = null
@@ -20,6 +27,18 @@ const Router = function(parentRouter) {
 
     function getPageId() {
         return pageId
+    }
+
+    function getPagePayload() {
+        return payload[routeId]
+    }
+
+    function getGlobalPayload() {
+        return payload.global
+    }
+
+    function getConfig() {
+        return parentCore.config
     }
 
     function syncHeight() {

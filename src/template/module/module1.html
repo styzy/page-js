@@ -20,7 +20,9 @@
     <button type="button" onclick="sendMsg1()">发送消息给第一个页面</button>
     <p>在第一个页面查看接收的消息</p>
     <script>
-        window.init = function(page, globalPayload, pagePayload, config) {
+        window.init = function(page, globalPayload) {
+            let pagePayload = page.getPageData()
+
             window.setHeight = function() {
                 document.body.style.height = parseInt(window.getComputedStyle(document.documentElement)['height']) + 1000 + 'px'
             }

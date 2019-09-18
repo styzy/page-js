@@ -21,7 +21,7 @@
         }
     </style>
     <script>
-        window.init = function(page, globalPayload, pagePayload, config) {
+        window.init = function(page, globalPayload) {
             page.messageReciver = function(message) {
                 var el_log_ctn = document.querySelector('#messageLogCtn')
                 var el_log = document.createElement('div')

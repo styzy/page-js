@@ -28,12 +28,9 @@ function checkOpenByPage() {
 
 // 通过框架数据初始化
 function initByParent() {
-    let payload = window.top[constants.parentPayloadName]
-    let parentCore = payload.core
-    let router = new Router(parentCore.router)
-    let routeId = parentCore.getPageInstance(router.getPageId()).routeId
+    let router = new Router()
     window.addEventListener('load', function() {
-        window.init && window.init(router, payload.global, payload[routeId], parentCore.config)
+        window.init && window.init(router, router.getGlobalData())
     })
     window.addEventListener('message', function(data) {
         if (data && data.data && data.data.type === constants.postMessageType) {
