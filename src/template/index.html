@@ -63,6 +63,14 @@
         .right .page-iframe-container iframe.page-iframe {
             min-height: calc(100vh - 4.2rem);
         }
+        
+        .native-iframe {
+            position: fixed;
+            width: 50%;
+            height: 50%;
+            bottom: 0;
+            right: 0;
+        }
     </style>
 </head>
 
@@ -93,6 +101,9 @@
         </a>
         <a href="javascript:void(0);" onclick="openByNative()">
             <div class="link">原生iframe打开</div>
+        </a>
+        <a href="javascript:void(0);" onclick="postMessageToHome()">
+            <div class="link">向首页发送消息</div>
         </a>
     </div>
     <div class="right">
@@ -249,8 +260,13 @@
 
         function openByNative() {
             var el_iframe = document.createElement('iframe')
+            el_iframe.className = 'native-iframe'
             el_iframe.src = 'module/module1.html'
             document.body.appendChild(el_iframe)
+        }
+
+        function postMessageToHome() {
+            page.postMessage('来自父页面的消息', homePageId)
         }
     </script>
 </body>

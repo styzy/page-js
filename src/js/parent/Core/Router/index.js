@@ -12,6 +12,7 @@ const Router = function(core) {
     this.recoverCache = recoverCache
     this.clearCache = clearCache
     this.syncHeightByPageId = syncHeightByPageId
+    this.postMessage = postMessage
 
     /**
      * 打开页面
@@ -157,6 +158,22 @@ const Router = function(core) {
             page.syncHeight()
         }
     }
+
+    /**
+     * 向子页面发送消息
+     * @param {*} data 
+     * @param {String} targetPageId 
+     */
+    function postMessage(data, targetPageId) {
+        var postData = {
+            type: constants.postMessageType,
+            from: '',
+            to: targetPageId,
+            data: data
+        }
+        window.postMessage(postData, '*')
+    }
+
 }
 
 export default Router
