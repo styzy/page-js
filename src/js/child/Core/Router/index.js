@@ -19,7 +19,7 @@ const Router = function() {
     this.getConfig = getConfig
     this.syncHeight = syncHeight
     this.postMessage = postMessage
-    this.messageReciver = null
+    this.messageReceiver = null
 
     function closeSelf() {
         parentRouter.close(pageId)

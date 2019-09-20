@@ -34,9 +34,9 @@ function initByParent() {
     })
     window.addEventListener('message', function(data) {
         if (data && data.data && data.data.type === constants.postMessageType) {
-            if (typeof router.messageReciver === 'function') {
+            if (typeof router.messageReceiver === 'function') {
                 let msg = data.data
-                router.messageReciver(msg)
+                router.messageReceiver(msg)
             }
         }
     })
