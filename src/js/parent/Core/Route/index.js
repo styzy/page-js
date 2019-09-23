@@ -18,7 +18,8 @@ const Route = function(core, options) {
     }
 
     function setOptions(opts) {
-        this.title = opts.title === false ? false : opts.title ? opts.title : opts.url
+        this.title = opts.title === false ? false : opts.title
+            // this.title = opts.title === false ? false : opts.title ? opts.title : opts.url
         this.preUrl = null
         if (this.url && this.url !== opts.url) {
             this.preUrl = this.url

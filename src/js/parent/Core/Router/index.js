@@ -13,6 +13,7 @@ const Router = function(core) {
     this.clearCache = clearCache
     this.syncHeightByPageId = syncHeightByPageId
     this.postMessage = postMessage
+    this.setTitle = setTitleByPageId
 
     /**
      * 打开页面
@@ -172,6 +173,18 @@ const Router = function(core) {
             data: data
         }
         window.postMessage(postData, '*')
+    }
+
+    /**
+     * 
+     * @param {String} pageId 
+     * @param {String} title 
+     */
+    function setTitleByPageId(pageId, title) {
+        var page = core.getPageInstance(pageId)
+        if (page) {
+            page.title.setTitle(title)
+        }
     }
 
 }

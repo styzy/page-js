@@ -23,21 +23,21 @@ const Title = function(core, page) {
         el_wrapper.className = constants.className.title.wrapper
         el_wrapper.addEventListener('click', titleClickHandler)
 
-        if (route.iconfont != null) {
+        if (route.iconfont) {
             var el_iconfont = document.createElement('i')
             el_iconfont.className = constants.className.title.icon + ' ' + route.iconfont
             el_wrapper.appendChild(el_iconfont)
         }
-        if (route.icon != null) {
+        if (route.icon) {
             var el_icon = document.createElement('img')
             el_icon.className = constants.className.title.icon
             el_icon.src = route.icon
             el_wrapper.appendChild(el_icon)
         }
-        if (route.title != false) {
+        if (route.title !== false) {
             var el_content = document.createElement('span')
             el_content.className = constants.className.title.content
-            el_content.innerHTML = route.title
+            el_content.innerHTML = route.title || route.url
             el_wrapper.appendChild(el_content)
         }
 

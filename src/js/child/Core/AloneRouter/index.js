@@ -11,15 +11,21 @@ const AloneRouter = function() {
     this.getPageId = empty
     this.getPageData = empty
     this.getGlobalData = empty
+    this.getParentRouter = empty
     this.getConfig = empty
     this.syncHeight = empty
     this.postMessage = empty
+    this.setTitle = setTitle
 
     function open(url) {
         if (typeof url == 'object') {
             url = url.url
         }
         window.open(url)
+    }
+
+    function setTitle(title) {
+        document.title = title
     }
 }
 

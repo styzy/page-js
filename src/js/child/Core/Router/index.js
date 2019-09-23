@@ -16,10 +16,12 @@ const Router = function() {
     this.getPageId = getPageId
     this.getPageData = getPagePayload
     this.getGlobalData = getGlobalPayload
+    this.getParentPage = getParentRouter
     this.getConfig = getConfig
     this.syncHeight = syncHeight
     this.postMessage = postMessage
     this.messageReceiver = null
+    this.setTitle = setTitle
 
     function closeSelf() {
         parentRouter.close(pageId)
@@ -35,6 +37,10 @@ const Router = function() {
 
     function getGlobalPayload() {
         return payload.global
+    }
+
+    function getParentRouter() {
+        return parentRouter
     }
 
     function getConfig() {
@@ -53,6 +59,10 @@ const Router = function() {
             data: data
         }
         window.top.postMessage(postData, '*')
+    }
+
+    function setTitle(title) {
+        parentRouter.setTitle(pageId, title)
     }
 
 }

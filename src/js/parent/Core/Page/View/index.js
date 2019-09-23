@@ -28,9 +28,15 @@ const View = function(core, page) {
         if (!isCrossOrigin(_this.iframe)) {
             syncHeight()
 
+            let route = core.getRouteInstance(_this.page.routeId)
+
             // 设置标题title
-            if (core.getRouteInstance(_this.page.routeId).title != false) {
-                _this.page.title.setTitle(_this.getTitle())
+            if (route.title !== false) {
+                if (route.title) {
+                    _this.page.title.setTitle(route.title)
+                } else {
+                    _this.page.title.setTitle(_this.getTitle())
+                }
             }
         }
         // load回调锚点
