@@ -171,8 +171,6 @@ const Core = function(userConfig) {
                 }
                 if (options.title === 'false') {
                     options.title = false
-                } else if (!options.title) {
-                    options.title = options.url
                 }
                 _this.router.open(options)
             }
