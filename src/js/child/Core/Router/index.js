@@ -6,8 +6,9 @@ const Router = function() {
     let parentRouter = parentCore.router
     let pageId = window.name
     let routeId = parentCore.getPageInstance(pageId).routeId
+    let route = parentCore.getRouteInstance(routeId)
 
-    this.open = parentRouter.open
+    this.open = open
     this.close = parentRouter.close
     this.closeAll = parentRouter.closeAll
     this.recoverCache = parentRouter.recoverCache
@@ -16,6 +17,7 @@ const Router = function() {
     this.redirect = redirect
     this.closeSelf = closeSelf
     this.getPageId = getPageId
+    this.getSourcePageId = getSourcePageId
     this.getPageData = getPagePayload
     this.getGlobalData = getGlobalPayload
     this.getParentPage = getParentRouter
@@ -24,6 +26,10 @@ const Router = function() {
     this.postMessage = postMessage
     this.messageReceiver = null
     this.setTitle = setTitle
+
+    function open(options) {
+        return parentRouter.open(options, pageId)
+    }
 
     function reload() {
         parentRouter.reload(pageId)
@@ -40,6 +46,10 @@ const Router = function() {
 
     function getPageId() {
         return pageId
+    }
+
+    function getSourcePageId() {
+        return route.sourcePageId
     }
 
     function getPagePayload() {

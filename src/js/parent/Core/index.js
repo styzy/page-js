@@ -39,6 +39,9 @@ const Core = function(userConfig) {
         isShowAllTitle: false
     }
 
+    // version
+    this.version = constants.verions
+
     // container
     _private.init = init
     _private.setTitleContainerInstance = setTitleContainer

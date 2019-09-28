@@ -18,6 +18,7 @@ const Route = function(core, options) {
     }
 
     function setOptions(opts) {
+        this.sourcePageId = opts.sourcePageId || ''
         this.title = opts.title === false ? false : opts.title
             // this.title = opts.title === false ? false : opts.title ? opts.title : opts.url
         this.preUrl = null

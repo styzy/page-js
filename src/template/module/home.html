@@ -38,6 +38,12 @@
                     return time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds()
                 }
             }
+
+            window.openPage = function() {
+                page.open({
+                    url: 'module/module2.html'
+                })
+            }
         }
     </script>
 </head>
@@ -48,6 +54,8 @@
 
     <h3>接收其他页面消息</h3>
     <div class="log-ctn" id="messageLogCtn"></div>
+    <hr>
+    <button type="button" onclick="openPage()">打开其他标签页</button>
 </body>
 
 </html>

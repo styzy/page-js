@@ -20,7 +20,7 @@ const Router = function(core) {
      * 打开页面
      * @param {Object} options
      */
-    function open(options) {
+    function open(options, sourcePageId) {
         var pageId = null
         switch (typeof options) {
             case 'string':
@@ -36,6 +36,7 @@ const Router = function(core) {
                 return false
                 break;
         }
+        options.sourcePageId = sourcePageId
 
         var route = createRoute(options)
         if (route) {

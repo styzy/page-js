@@ -81,7 +81,9 @@ const constants = {
     // 子页面初始化方法名称
     childInitCallbackName: 'init',
     // 页面间通信标识
-    postMessageType: 'page-message'
+    postMessageType: 'page-message',
+    // 版本号
+    verions: '1.0.0'
 }
 
 export default constants

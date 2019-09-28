@@ -11,6 +11,7 @@ const AloneRouter = function() {
     this.redirect = window.location.replace
     this.closeSelf = window.close
     this.getPageId = empty
+    this.getSourcePageId = empty
     this.getPageData = empty
     this.getGlobalData = empty
     this.getParentRouter = empty
