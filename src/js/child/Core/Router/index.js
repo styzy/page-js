@@ -9,29 +9,34 @@ const Router = function() {
     let route = parentCore.getRouteInstance(routeId)
 
     this.open = open
-    this.close = parentRouter.close
+    this.close = close
     this.closeAll = parentRouter.closeAll
-    this.recoverCache = parentRouter.recoverCache
-    this.clearCache = parentRouter.clearCache
     this.reload = reload
     this.redirect = redirect
-    this.closeSelf = closeSelf
+    this.syncHeight = syncHeight
+    this.postMessage = postMessage
+    this.messageReceiver = null
+    this.setTitle = setTitle
     this.getPageId = getPageId
     this.getSourcePageId = getSourcePageId
     this.getPageData = getPagePayload
     this.getGlobalData = getGlobalPayload
     this.getParentPage = getParentRouter
     this.getConfig = getConfig
-    this.syncHeight = syncHeight
-    this.postMessage = postMessage
-    this.messageReceiver = null
-    this.setTitle = setTitle
+    this.recoverCache = parentRouter.recoverCache
+    this.clearCache = parentRouter.clearCache
 
     function open(options) {
         return parentRouter.open(options, pageId)
     }
 
-    function reload() {
+    function close(targetPageId) {
+        targetPageId = targetPageId || pageId
+        parentRouter.close(targetPageId)
+    }
+
+    function reload(targetPageId) {
+        targetPageId = targetPageId || pageId
         parentRouter.reload(pageId)
     }
 
@@ -40,8 +45,22 @@ const Router = function() {
         parentRouter.redirect(url, targetPageId)
     }
 
-    function closeSelf() {
-        parentRouter.close(pageId)
+    function syncHeight() {
+        parentRouter.syncHeightByPageId(pageId)
+    }
+
+    function postMessage(data, targetPageId) {
+        var postData = {
+            type: constants.postMessageType,
+            from: pageId,
+            to: targetPageId,
+            data: data
+        }
+        window.top.postMessage(postData, '*')
+    }
+
+    function setTitle(title) {
+        parentRouter.setTitle(pageId, title)
     }
 
     function getPageId() {
@@ -67,25 +86,6 @@ const Router = function() {
     function getConfig() {
         return parentCore.config
     }
-
-    function syncHeight() {
-        parentRouter.syncHeightByPageId(window.name)
-    }
-
-    function postMessage(data, targetPageId) {
-        var postData = {
-            type: constants.postMessageType,
-            from: pageId,
-            to: targetPageId,
-            data: data
-        }
-        window.top.postMessage(postData, '*')
-    }
-
-    function setTitle(title) {
-        parentRouter.setTitle(pageId, title)
-    }
-
 }
 
 export default Router

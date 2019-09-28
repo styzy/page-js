@@ -83,7 +83,7 @@ const constants = {
     // 页面间通信标识
     postMessageType: 'page-message',
     // 版本号
-    verions: '1.0.0'
+    verions: '1.0.1'
 }
 
 export default constants

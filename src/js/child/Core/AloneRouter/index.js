@@ -5,20 +5,19 @@ const AloneRouter = function() {
     this.open = open
     this.close = window.close
     this.closeAll = window.close
-    this.recoverCache = empty
-    this.clearCache = empty
     this.reload = window.location.reload
     this.redirect = window.location.replace
-    this.closeSelf = window.close
+    this.syncHeight = empty
+    this.postMessage = empty
+    this.setTitle = setTitle
     this.getPageId = empty
     this.getSourcePageId = empty
     this.getPageData = empty
     this.getGlobalData = empty
     this.getParentRouter = empty
     this.getConfig = empty
-    this.syncHeight = empty
-    this.postMessage = empty
-    this.setTitle = setTitle
+    this.recoverCache = empty
+    this.clearCache = empty
 
     function open(url) {
         if (typeof url == 'object') {
