@@ -86,9 +86,8 @@ const View = function(core, page) {
         _this.iframe.src = _this.iframe.src
     }
 
-    function update(needRenderIframe) {
-        needRenderIframe = !!needRenderIframe
-        if (needRenderIframe) {
+    function update(needReRender) {
+        if (needReRender) {
             // 重渲染iframe
             destoryIframe()
             createIframe()

@@ -15,6 +15,7 @@ const Title = function(core, page) {
     this.focus = focus
     this.blur = blur
     this.setTitle = setTitle
+    this.update = update
     this.titleMoreCheck = titleMoreCheck
 
     function createDom() {
@@ -50,7 +51,6 @@ const Title = function(core, page) {
         } else {
             el_close = document.createElement("span")
             el_close.className = constants.className.title.close + ' ' + core.config.closeClass
-
         }
 
         if (route.userClose) {
@@ -122,6 +122,17 @@ const Title = function(core, page) {
 
     function setTitle(title) {
         _this.el.querySelector('.' + constants.className.title.content).innerHTML = title
+    }
+
+    function update(needReRender) {
+        if (needReRender) {
+            let el_old = _this.el
+            createDom()
+            el_old.replaceWith(_this.el)
+        } else {
+            var route = core.getRouteInstance(_this.page.routeId)
+            setTitle(route.title || route.url)
+        }
     }
 
     function titleMoreCheck() {

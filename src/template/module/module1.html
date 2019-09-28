@@ -8,6 +8,9 @@
 
 <body>
     <h1>基本方法</h1>
+    <h3>跳转</h3>
+    <button type="button" onclick="openNew()">打开新标签页</button>
+    <button type="button" onclick="redirect()">重定向</button>
     <h3>高度同步</h3>
     <button type="button" onclick="setHeight()">设置高度</button>
     <button type="button" onclick="syncHeight()">同步高度</button>
@@ -22,6 +25,14 @@
     <script>
         window.init = function(page, globalPayload) {
             let pagePayload = page.getPageData()
+
+            window.openNew = function() {
+                page.open('http://www.baidu.com')
+            }
+
+            window.redirect = function() {
+                page.redirect('http://www.baidu.com')
+            }
 
             window.setHeight = function() {
                 document.body.style.height = parseInt(window.getComputedStyle(document.documentElement)['height']) + 1000 + 'px'

@@ -75,8 +75,9 @@ const Page = function(core, routeId) {
     }
 
     // 更新
-    function update(needRenderIframe) {
-        _this.view.update(needRenderIframe)
+    function update(needReRender) {
+        _this.title.update(!!needReRender)
+        _this.view.update(!!needReRender)
     }
 
     // 销毁实例

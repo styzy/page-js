@@ -12,6 +12,8 @@ const Router = function() {
     this.closeAll = parentRouter.closeAll
     this.recoverCache = parentRouter.recoverCache
     this.clearCache = parentRouter.clearCache
+    this.reload = reload
+    this.redirect = redirect
     this.closeSelf = closeSelf
     this.getPageId = getPageId
     this.getPageData = getPagePayload
@@ -22,6 +24,15 @@ const Router = function() {
     this.postMessage = postMessage
     this.messageReceiver = null
     this.setTitle = setTitle
+
+    function reload() {
+        parentRouter.reload(pageId)
+    }
+
+    function redirect(url, targetPageId) {
+        targetPageId = targetPageId || pageId
+        parentRouter.redirect(url, targetPageId)
+    }
 
     function closeSelf() {
         parentRouter.close(pageId)

@@ -9,6 +9,7 @@ const Router = function(core) {
     this.close = close
     this.closeAll = closeAll
     this.reload = reload
+    this.redirect = redirect
     this.recoverCache = recoverCache
     this.clearCache = clearCache
     this.syncHeightByPageId = syncHeightByPageId
@@ -120,6 +121,27 @@ const Router = function(core) {
             return false
         }
         page.reload()
+    }
+
+    /**
+     * 重定向页面
+     * @param {String} url 
+     * @param {String} pageId 
+     */
+    function redirect(url, pageId) {
+        var page = core.getPageInstance(pageId)
+        if (!page) {
+            log.error('重定向页面错误，错误的pageId')
+            return false
+        }
+        if (url) {
+            var route = core.getRouteInstance(page.routeId)
+            route.url = url
+            route.update(route)
+            page.update()
+        } else {
+            page.reload()
+        }
     }
 
     /**
