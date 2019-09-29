@@ -615,6 +615,9 @@ const Core = function(userConfig) {
     }
 }
 
+// version
+Core.version = constants.verions
+
 function showHelpInfo() {
     let helpInfo = '%c********Page标签页框架帮助********\n' +
         '\n输入对应的命令查看帮助(本帮助功能仅在devMode下有效):\n' +
