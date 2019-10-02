@@ -37,7 +37,7 @@ const Router = function() {
 
     function reload(targetPageId) {
         targetPageId = targetPageId || pageId
-        parentRouter.reload(pageId)
+        parentRouter.reload(targetPageId)
     }
 
     function redirect(url, targetPageId) {
