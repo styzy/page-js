@@ -1,5 +1,5 @@
-import { isCrossOrigin, replaceAll } from '../../../utils'
-import constants from '../../../../constants'
+import { isCrossOrigin, replaceAll } from '../../../../utils'
+import CONSTANTS from '../../../../CONSTANTS'
 
 /**
  * View类定义
@@ -9,8 +9,8 @@ const View = function(core, page) {
     var _this = this
 
     this.page = page
+    this.el_wrapper = getWrapper()
     this.el = null
-    this.iframe = null
     this.iframeOnLoad = iframeOnLoad
     this.createDom = createDom
     this.appendDom = appendDom
@@ -23,12 +23,26 @@ const View = function(core, page) {
     this.syncHeight = syncHeight
     this.postMessage = postMessage
 
+    function getWrapper() {
+        let viewWrapper = core.getRouteInstance(_this.page.routeId).viewWrapper,
+            el_wrapper = null
+        if (typeof viewWrapper === 'string') {
+            el_wrapper = document.querySelector(viewWrapper)
+        }
+        if (viewWrapper instanceof HTMLElement) {
+            el_wrapper = viewWrapper
+        }
+        el_wrapper = el_wrapper || core.getViewWrapperInstance()
+        return el_wrapper
+    }
+
     function iframeOnLoad() {
         // 同源
-        if (!isCrossOrigin(_this.iframe)) {
-            syncHeight()
+        if (!isCrossOrigin(_this.el)) {
 
             let route = core.getRouteInstance(_this.page.routeId)
+
+            route.autoSyncHeight && syncHeight()
 
             // 设置标题title
             if (route.title !== false) {
@@ -54,89 +68,9 @@ const View = function(core, page) {
     }
 
     function createDom() {
-        createWrapper()
-        createIframe()
-    }
-
-    function appendDom() {
-        if (!_this.el) {
-            log.error('插入View失败，请先执行createDom方法')
-            return false
-        }
-        core.getViewContainerInstance().appendChild(_this.el)
-    }
-
-    function removeDom() {
-        core.getViewContainerInstance().removeChild(_this.el)
-    }
-
-    function focus() {
-        if (_this.el.className.indexOf(constants.className.view.focus) == -1) {
-            _this.el.className = _this.el.className + ' ' + constants.className.view.focus
-        }
-    }
-
-    function blur() {
-        if (_this.el.className.indexOf(constants.className.view.focus) != -1) {
-            _this.el.className = replaceAll(_this.el.className, ' ' + constants.className.view.focus)
-        }
-    }
-
-    function reload() {
-        _this.iframe.src = _this.iframe.src
-    }
-
-    function update(needReRender) {
-        if (needReRender) {
-            // 重渲染iframe
-            destoryIframe()
-            createIframe()
-        } else {
-            // 只更新链接
-            var route = core.getRouteInstance(_this.page.routeId)
-            _this.iframe.src = route.url
-        }
-    }
-
-    function getTitle() {
-        return _this.iframe.contentWindow.document.title
-    }
-
-    function syncHeight() {
-        if (isCrossOrigin(_this.iframe)) {
-            return false
-        }
-        var iframeWindow = _this.iframe.contentWindow
-            // 获取高度赋值给iframe
-        if (core.getRouteInstance(_this.page.routeId).syncHeight) {
-            if (_this.iframe.attachEvent) {
-                _this.iframe.height = iframeWindow.document.documentElement.scrollHeight
-            } else {
-                var childHeight = iframeWindow.getComputedStyle(iframeWindow.document.documentElement)['height']
-                _this.iframe.height = childHeight
-            }
-        }
-    }
-
-    function postMessage(message) {
-        if (isCrossOrigin(_this.iframe)) {
-            return false
-        }
-        var iframeWindow = _this.iframe.contentWindow
-        iframeWindow.postMessage(message, '*')
-    }
-
-    function createWrapper() {
-        var el_wrapper = document.createElement("div")
-        el_wrapper.className = constants.className.view.wrapper
-        _this.el = el_wrapper
-
-    }
-
-    function createIframe() {
-        var el_iframe = document.createElement("iframe")
+        var el_iframe = document.createElement('iframe')
         var route = core.getRouteInstance(_this.page.routeId)
-        el_iframe.className = constants.className.view.iframe
+        el_iframe.className = CONSTANTS.CLASS_NAME.VIEW.IFRAME
         el_iframe.src = route.url
         el_iframe.name = _this.page.id
         el_iframe.frameBorder = 0
@@ -148,15 +82,74 @@ const View = function(core, page) {
         } else {
             el_iframe.onload = iframeOnLoad
         }
-        _this.iframe = el_iframe
-        _this.el.appendChild(_this.iframe)
+        _this.el = el_iframe
     }
 
-    function destoryIframe() {
-        if (_this.iframe) {
-            _this.el.removeChild(_this.iframe)
-            _this.iframe = null
+    function appendDom() {
+        if (!_this.el) {
+            log.error('插入View失败，请先执行createDom方法')
+            return false
         }
+        _this.el_wrapper.appendChild(_this.el)
+    }
+
+    function removeDom() {
+        _this.el_wrapper.removeChild(_this.el)
+    }
+
+    function focus() {
+        if (_this.el.className.indexOf(CONSTANTS.CLASS_NAME.VIEW.FOCUS) == -1) {
+            _this.el.className = _this.el.className + ' ' + CONSTANTS.CLASS_NAME.VIEW.FOCUS
+        }
+    }
+
+    function blur() {
+        if (_this.el.className.indexOf(CONSTANTS.CLASS_NAME.VIEW.FOCUS) != -1) {
+            _this.el.className = replaceAll(_this.el.className, ' ' + CONSTANTS.CLASS_NAME.VIEW.FOCUS)
+        }
+    }
+
+    function reload() {
+        _this.el.src = _this.el.src
+    }
+
+    function update(needReRender) {
+        if (needReRender) {
+            // 重渲染iframe
+            removeDom()
+            createDom()
+            appendDom()
+        } else {
+            // 只更新链接
+            var route = core.getRouteInstance(_this.page.routeId)
+            _this.el.src = route.url
+        }
+    }
+
+    function getTitle() {
+        return _this.el.contentWindow.document.title
+    }
+
+    function syncHeight() {
+        if (isCrossOrigin(_this.el)) {
+            return false
+        }
+        let iframeWindow = _this.el.contentWindow
+        // 获取高度赋值给iframe
+        if (_this.el.attachEvent) {
+            _this.el.height = iframeWindow.document.documentElement.scrollHeight
+        } else {
+            let childHeight = iframeWindow.getComputedStyle(iframeWindow.document.documentElement)['height']
+            _this.el.style.height = childHeight
+        }
+    }
+
+    function postMessage(message) {
+        if (isCrossOrigin(_this.el)) {
+            return false
+        }
+        var iframeWindow = _this.el.contentWindow
+        iframeWindow.postMessage(message, '*')
     }
 }
 

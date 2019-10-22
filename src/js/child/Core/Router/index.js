@@ -1,7 +1,7 @@
-import constants from '../../../constants'
+import CONSTANTS from '../../../CONSTANTS'
 
 const Router = function() {
-    let payload = window.top[constants.parentPayloadName]
+    let payload = window.top[CONSTANTS.PARENT_PAYLOAD_NAME]
     let parentCore = payload.core
     let parentRouter = parentCore.router
     let pageId = window.name
@@ -51,7 +51,7 @@ const Router = function() {
 
     function postMessage(data, targetPageId) {
         var postData = {
-            type: constants.postMessageType,
+            type: CONSTANTS.POST_MESSAGE_TYPE,
             from: pageId,
             to: targetPageId,
             data: data

@@ -1,4 +1,4 @@
-import constants from '../../../constants'
+import CONSTANTS from '../../../CONSTANTS'
 
 // Router定义
 const Router = function(core) {
@@ -21,7 +21,8 @@ const Router = function(core) {
      * @param {Object} options
      */
     function open(options, sourcePageId) {
-        var pageId = null
+        sourcePageId = sourcePageId || null
+        let pageId = null
         switch (typeof options) {
             case 'string':
                 options = {
@@ -34,55 +35,42 @@ const Router = function(core) {
             default:
                 core.log.error('打开页面失败，接收的参数类型为String|Object|Route实例，而不是' + typeof options)
                 return false
-                break;
         }
-        options.sourcePageId = sourcePageId
 
-        var route = createRoute(options)
+        let route = createRoute(options)
         if (route) {
-            var page = createPage(options, route)
+            let page = getPage(route)
+            if (route.checkUrlUpdate()) {
+                page.update()
+            }
             page.open()
-            pageId = page.id
+            return page.id
+        } else {
+            return null
         }
-
-        return pageId
 
         function createRoute(opts) {
-            var route = null
-                // 允许重复
-            if (opts.repeatEnable) {
-                if (!core.pageLimitCheck()) {
-                    core.config.onLimit && core.config.onLimit(core.config.limit)
-                    return false
-                }
-                route = core.createRouteInstanceByConfig(opts)
-            } else {
-                var existRoute = core.getRouteInstanceByUrl(opts.url)
-                if (existRoute) {
-                    route = existRoute
-                    route.update(opts)
-                } else {
-                    if (!core.pageLimitCheck()) {
-                        core.config.onLimit && core.config.onLimit(core.config.limit)
-                        return false
-                    }
-                    route = core.createRouteInstanceByConfig(opts)
-                }
+            let route = core.createRouteInstance(opts, sourcePageId)
+            let existRoute = route.getUrlRepeatRoute()
+            if (existRoute) {
+                core.removeRouteInstance(route.id)
+                existRoute.update(opts)
+                return existRoute
+            }
+            if (!core.pageLimitCheck()) {
+                core.removeRouteInstance(route.id)
+                core.config.onLimit && core.config.onLimit(core.config.limit)
+                return false
             }
             return route
         }
 
-        function createPage(opts, route) {
-            var page = null
-            if (route.pageId) {
-                page = core.getPageInstance(route.pageId)
-                if (route.preUrl) {
-                    page.update()
-                }
+        function getPage({ pageId, id: routeId }) {
+            if (pageId) {
+                return core.getPageInstance(pageId)
             } else {
-                page = core.createPageInstanceByRouteId(route.id)
+                return core.createPageInstanceByRouteId(routeId)
             }
-            return page
         }
     }
 
@@ -90,13 +78,17 @@ const Router = function(core) {
      * 关闭页面
      * @param {String} pageId
      */
-    function close(pageId) {
+    function close(pageId, isForce) {
         var page = core.getPageInstance(pageId)
         if (!page) {
-            log.error('关闭页面错误，错误的pageId')
+            core.log.error('关闭页面失败，错误的pageId')
             return false
         }
         var route = core.getRouteInstance(page.routeId)
+        if (!route.closeEnable && !isForce) {
+            core.log.warn('关闭页面失败，页面配置不允许关闭')
+            return false
+        }
         page.close()
         route.destory()
     }
@@ -104,10 +96,10 @@ const Router = function(core) {
     /**
      * 关闭所有页面
      */
-    function closeAll() {
+    function closeAll(isForce) {
         var pageIdList = core.getPageInstanceIdList()
         for (var i = 0; i < pageIdList.length; i++) {
-            _this.close(pageIdList[i])
+            _this.close(pageIdList[i], isForce)
         }
     }
 
@@ -118,7 +110,7 @@ const Router = function(core) {
     function reload(pageId) {
         var page = core.getPageInstance(pageId)
         if (!page) {
-            log.error('重载页面错误，错误的pageId')
+            core.log.error('重载页面错误，错误的pageId')
             return false
         }
         page.reload()
@@ -132,7 +124,7 @@ const Router = function(core) {
     function redirect(url, pageId) {
         var page = core.getPageInstance(pageId)
         if (!page) {
-            log.error('重定向页面错误，错误的pageId')
+            core.log.error('重定向页面错误，错误的pageId')
             return false
         }
         if (url) {
@@ -154,7 +146,7 @@ const Router = function(core) {
             return false
         }
         var routeHistory = core.loadLocalCache()
-        if (typeof routeHistory === 'object') {
+        if (routeHistory instanceof Array) {
             if (routeHistory.length) {
                 for (var i = 0; i < routeHistory.length; i++) {
                     _this.open(routeHistory[i])
@@ -190,7 +182,7 @@ const Router = function(core) {
      */
     function postMessage(data, targetPageId) {
         var postData = {
-            type: constants.postMessageType,
+            type: CONSTANTS.POST_MESSAGE_TYPE,
             from: '',
             to: targetPageId,
             data: data

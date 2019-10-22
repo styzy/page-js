@@ -1,5 +1,5 @@
 color-theme = #1193FA
-.page-title-ctn
+.page-title-container
 	z-index 1
 	overflow hidden
 	&.show-all
@@ -11,88 +11,86 @@ color-theme = #1193FA
 			right 0
 			bottom 0
 			transform rotate(180deg)
-.page-title-wrap
-	position relative
-	width calc(100% + 110px)
-	background #F4F5F6
-	min-height 100%
-	&:after
-		display block
-		content ''
-		zoom 1
-		clear both
-.page-title-more
-	display none
-	position absolute
-	top 0
-	right 110px
-	width 40px
-	height 40px
-	background-image url('../img/down.png')
-	background-repeat no-repeat
-	background-position center
-	background-color #F4F5F6
-	cursor pointer
-	z-index 1
-	&:hover
-		background-color #FFFFFF
-		/* transition: 0.3s; */
-.page-title
-	float left
-	height 40px
-	line-height 40px
-	padding-left 15px
-	border-right 1px solid #F4F5F6
-	background-color #EEEEEE
-	color #666666
-	cursor pointer
-.page-title.focus
-	/* background-color: #FFFFFF;
-	color: #333333;
-	border-color: #FFFFFF; */
-	background-color color-theme
-	color #FFFFFF
-	border-color color-theme
-span.page-title-content
-	display inline-block
-	width 100px
-	margin-right 15px
-	overflow hidden
-	white-space nowrap
-	text-overflow ellipsis
-	vertical-align middle
-img.page-title-icon
-	display inline-block
-	width 20px
-	height 20px
-	vertical-align middle
-.page-title-close
-	margin-right 15px
-	vertical-align middle
-	&.page-title-close-disabled
-		visibility hidden
-i.page-title-close
-	font-size 20px
-span.page-title-close
-	font-size 14px
-	&:after
-		content 'x'
-.page-title-close:hover
-	color #FFA200
-.page-iframe-wrapper
-	position relative
-	display none
-	&.focus
-		display block
-iframe.page-iframe
-	display block
-	width 100%
-	min-height calc(100vh - 120px)
-	border 0
-	box-sizing border-box
-	&[sandbox]
-		border 2px solid color-theme
-.page-contextMenu-wrapper
+	.page-title-wrap
+		position relative
+		width calc(100% + 110px)
+		background #F4F5F6
+		min-height 100%
+		&:after
+			display block
+			content ''
+			zoom 1
+			clear both
+	.page-title-more
+		display none
+		position absolute
+		top 0
+		right 110px
+		width 40px
+		height 40px
+		background-image url('../img/down.png')
+		background-repeat no-repeat
+		background-position center
+		background-color #F4F5F6
+		cursor pointer
+		z-index 1
+		&:hover
+			background-color #FFFFFF
+			/* transition: 0.3s; */
+	.page-title
+		float left
+		height 40px
+		padding 0 5px
+		line-height 38px
+		font-size 14px
+		border-right 1px solid #F4F5F6
+		background-color #EEEEEE
+		box-sizing border-box
+		color #666666
+		cursor pointer
+		img
+			display block
+			border none
+		&.page-title-focus
+			/* background-color: #FFFFFF;
+			color: #333333;
+			border-color: #FFFFFF; */
+			background-color color-theme
+			color #FFFFFF
+			border-color color-theme
+	.page-title-icon
+		display inline-block
+		margin 0 5px
+		vertical-align middle
+	.page-title-content
+		display inline-block
+		width 100px
+		margin 0 5px
+		overflow hidden
+		white-space nowrap
+		text-overflow ellipsis
+		vertical-align middle
+	.page-title-close
+		display inline-block
+		margin 0 5px
+		vertical-align middle
+	.page-title-close:hover
+		color #FFA200
+.page-view-container
+	.page-view-wrapper
+		position relative
+		min-height inherit
+		iframe.page-view-iframe
+			display none
+			width 100%
+			min-height inherit
+			border 0
+			box-sizing border-box
+			&[sandbox]
+				border 2px solid color-theme
+			&.page-view-iframe-focus
+				display block
+.page-contextmenu-wrapper
 	position fixed
 	left 50%
 	top 50%
@@ -101,15 +99,15 @@ iframe.page-iframe
 	animation slideIn 0.3s linear
 	overflow hidden
 	z-index 1
-.page-contextMenu-group
+.page-contextmenu-group
 	padding-top 8px
 	&:last-child
 		padding-bottom 8px
 	&.dev
-		.page-contextMenu-title
+		.page-contextmenu-title
 			background-color color-theme
 			color #FFFFFF
-.page-contextMenu-title
+.page-contextmenu-title
 	padding 0 20px 0 34px
 	margin-bottom 8px
 	height 30px
@@ -118,10 +116,10 @@ iframe.page-iframe
 	font-weight 600
 	background-color #F4F5F6
 	color #666666
-.page-contextMenu-cutline
+.page-contextmenu-cutline
 	margin-top 8px
 	border-top 1px solid #CCCCCC
-.page-contextMenu-menu
+.page-contextmenu-menu
 	position relative
 	min-width 120px
 	height 30px
@@ -131,12 +129,12 @@ iframe.page-iframe
 	&:hover
 		background-color #E1E1E1
 		transition 0.3s
-		.page-contextMenu-menu-icon
+		.page-contextmenu-menu-icon
 			i
 				color #424242
-		.page-contextMenu-menu-name
+		.page-contextmenu-menu-name
 			color #424242
-.page-contextMenu-menu-icon
+.page-contextmenu-menu-icon
 	position absolute
 	top 0
 	left 0
@@ -156,12 +154,12 @@ iframe.page-iframe
 		font-size 12px
 		text-align center
 		color #666666
-.page-contextMenu-menu-name
+.page-contextmenu-menu-name
 	padding 0 20px 0 34px
 	color #666666
 	font-size 14px
 	white-space nowrap
-.page-contextMenu-menu-viewMarker
+.page-contextmenu-menu-viewMarker
 	position absolute
 	top 0
 	left 0

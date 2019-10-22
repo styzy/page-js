@@ -4,14 +4,9 @@ import View from './View'
 // Page类定义
 const Page = function(core, routeId) {
     var _this = this,
-        id = core.createPageInstanceId(),
-        title = titleCreator(),
-        view = viewCreator(),
         isRendered = false
 
-    this.id = id
-    this.title = title
-    this.view = view
+    this.id = core.createPageInstanceId()
     this.routeId = routeId
     this.open = open
     this.close = close
@@ -22,6 +17,8 @@ const Page = function(core, routeId) {
     this.destory = destory
     this.syncHeight = syncHeight
     this.postMessage = postMessage
+    this.title = titleCreator()
+    this.view = viewCreator()
 
     // title创建方法
     function titleCreator() {
@@ -35,13 +32,15 @@ const Page = function(core, routeId) {
 
     // 打开页面
     function open() {
+        let route = core.getRouteInstance(_this.routeId)
+        let autoFocus = route.autoFocus
         if (!isRendered) {
             createDom()
             appendDom()
             isRendered = true
             _this.title.titleMoreCheck()
         }
-        core.setCurrentPageId(_this.id)
+        autoFocus && core.setCurrentPageId(_this.id)
     }
 
     // 关闭页面
@@ -76,13 +75,17 @@ const Page = function(core, routeId) {
 
     // 更新
     function update(needReRender) {
+        needReRender = !!needReRender
         _this.title.update(!!needReRender)
         _this.view.update(!!needReRender)
+        if (needReRender && core.getCurrentPageId() === _this.id) {
+            _this.focus()
+        }
     }
 
     // 销毁实例
     function destory() {
-        core.removePageInstanceByPageId(_this.id)
+        core.removePageInstance(_this.id)
     }
 
     function syncHeight() {

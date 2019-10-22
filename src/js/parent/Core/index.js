@@ -1,11 +1,12 @@
-import { Config, defaultConfig } from '../Config'
 import Log from '../Log'
-import constants from '../../constants'
+import CONSTANTS from '../../CONSTANTS'
+import Config from './Config'
 import Router from './Router'
 import Route from './Route'
 import Page from './Page'
 import ContextMenu from './ContextMenu'
-import { replaceAll } from '../utils'
+import { replaceAll } from '../../utils'
+import { configRules } from './rules'
 
 // 核心类定义
 const Core = function(userConfig) {
@@ -20,6 +21,7 @@ const Core = function(userConfig) {
         titleWrapper: null,
         titleMore: null,
         viewContainer: null,
+        viewWrapper: null,
         contextMenu: null
     }
 
@@ -40,7 +42,7 @@ const Core = function(userConfig) {
     }
 
     // version
-    this.version = constants.verions
+    this.version = CONSTANTS.VERSION
 
     // container
     _private.init = init
@@ -50,6 +52,8 @@ const Core = function(userConfig) {
     this.getTitleWrapperInstance = getTitleWrapper
     _private.setViewContainerInstance = setViewContainer
     this.getViewContainerInstance = getViewContainer
+    _private.setViewWrapperInstance = setViewWrapper
+    this.getViewWrapperInstance = getViewWrapper
     _private.setTitleMoreInstance = setTitleMore
     this.getTitleMoreInstance = getTitleMore
 
@@ -59,13 +63,13 @@ const Core = function(userConfig) {
 
     // route
     this.createRouteInstanceId = routeInstanceIdCreator
-    this.createRouteInstanceByConfig = createRouteInstanceByConfig
+    this.createRouteInstance = createRouteInstance
     _private.addRouteInstance = addRouteInstance
     this.getRouteInstance = getRouteInstance
     this.getRouteInstanceByUrl = getRouteInstanceByUrl
     this.getRouteInstances = getRouteInstances
     this.getRouteInstanceIdList = getRouteInstanceIdList
-    this.removeRouteInstanceByPageId = removeRouteInstance
+    this.removeRouteInstance = removeRouteInstance
 
     // page
     this.createPageInstanceId = pageInstanceIdCreator
@@ -74,7 +78,7 @@ const Core = function(userConfig) {
     this.getPageInstance = getPageInstance
     this.getPageInstanceIdList = getPageInstanceIdList
     this.getPageInstances = getPageInstances
-    this.removePageInstanceByPageId = removePageInstance
+    this.removePageInstance = removePageInstance
     this.setCurrentPageId = setCurrentPageId
     this.getCurrentPageId = getCurrentPageId
 
@@ -117,7 +121,7 @@ const Core = function(userConfig) {
     this.router = new Router(this)
 
     // 挂载信息
-    window[constants.parentPayloadName] = {
+    window[CONSTANTS.PARENT_PAYLOAD_NAME] = {
         core: this,
         global: this.config.globalData
     }
@@ -126,10 +130,11 @@ const Core = function(userConfig) {
     if (this.config.devMode) {
         // 显示帮助信息
         showHelpInfo()
-        window[constants.devModeWindowDataName] = {
+        window[CONSTANTS.DEV_MODE_WINDOW_DATA_NAME] = {
             instances: instances,
             instanceCount: instanceCount,
-            currentId: currentId
+            currentId: currentId,
+            config: this.config
         }
     }
 
@@ -148,7 +153,7 @@ const Core = function(userConfig) {
 
         // 初始化跳转路由
         function initRoute() {
-            var el_routes = document.querySelectorAll(constants.selector.routeEl)
+            var el_routes = document.querySelectorAll(CONSTANTS.SELECTOR.ROUTE_ELEMENT)
             for (var i = 0; i < el_routes.length; i++) {
                 var el = el_routes[i]
                 el.addEventListener('click', function() {
@@ -161,21 +166,39 @@ const Core = function(userConfig) {
                 if (!_this.router) {
                     return false
                 }
-                var options = {
-                    url: this.getAttribute(constants.attributeName.routeUrl),
-                    title: this.getAttribute(constants.attributeName.routeTitle),
-                    icon: this.getAttribute(constants.attributeName.routeIcon),
-                    iconfont: this.getAttribute(constants.attributeName.routeIconfont),
-                    userClose: !(this.getAttribute(constants.attributeName.routeDisableClose) === 'true'),
-                    repeatEnable: this.getAttribute(constants.attributeName.routeRepeatEnable) === 'true',
-                    syncHeight: !(this.getAttribute(constants.attributeName.syncHeight) === 'false'),
-                    onLoad: this.getAttribute(constants.attributeName.routeOnLoad) || null,
-                    onClose: this.getAttribute(constants.attributeName.routeOnClose) || null
+                let options = {
+                    url: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_URL)),
+                    title: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_TITLE)),
+                    titleIcon: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_TITLE_ICON)),
+                    closeEnable: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_CLOSE_ENABLE)),
+                    repeatEnable: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_REPEAT_ENABLE)),
+                    autoSyncHeight: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_AUTO_SYNC_HEIGHT) === 'false'),
+                    onLoad: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_ON_LOAD)),
+                    onClose: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_ON_CLOSE))
                 }
-                if (options.title === 'false') {
-                    options.title = false
+
+                for (const key in options) {
+                    if (options.hasOwnProperty(key)) {
+                        const value = options[key]
+                        if (value === null) {
+                            delete options[key]
+                        }
+                    }
                 }
+
                 _this.router.open(options)
+
+                function getEvalValue(str) {
+                    if (str) {
+                        try {
+                            str = eval(str)
+                        } catch (error) {} finally {
+                            return str
+                        }
+                    } else {
+                        return null
+                    }
+                }
             }
         }
 
@@ -185,20 +208,22 @@ const Core = function(userConfig) {
                 el_title_ctn = null
             if (typeof titleParam === 'string') {
                 el_title_ctn = document.querySelector(titleParam)
-            } else if (titleParam instanceof HTMLElement) {
+            }
+            if (titleParam instanceof HTMLElement) {
                 el_title_ctn = titleParam
-            } else {
+            }
+            if (!titleParam) {
                 _this.log.error('标题栏实例化失败，错误的titleContainer参数:\n', titleParam)
                 return false
             }
-            el_title_ctn.className = el_title_ctn.className + ' ' + constants.className.titleContainer
+            el_title_ctn.className = el_title_ctn.className + ' ' + CONSTANTS.CLASS_NAME.TITLE_CONTAINER
             _private.setTitleContainerInstance(el_title_ctn)
             var el_title_warp = document.createElement("div")
-            el_title_warp.className = constants.className.titleWrapper
+            el_title_warp.className = CONSTANTS.CLASS_NAME.TITLE_WRAPPER
             el_title_ctn.appendChild(el_title_warp)
             _private.setTitleWrapperInstance(el_title_warp)
             var el_title_more = document.createElement("div")
-            el_title_more.className = constants.className.titleMore
+            el_title_more.className = CONSTANTS.CLASS_NAME.TITLE_MORE
             el_title_more.addEventListener('click', function() {
                 _private.titleMoreHandler()
                 if (!_this.getTitleMoreShowState()) {
@@ -216,13 +241,20 @@ const Core = function(userConfig) {
                 el_view_ctn = null
             if (typeof viewParam === 'string') {
                 el_view_ctn = document.querySelector(viewParam)
-            } else if (viewParam instanceof HTMLElement) {
+            }
+            if (viewParam instanceof HTMLElement) {
                 el_view_ctn = viewParam
-            } else {
+            }
+            if (!el_view_ctn) {
                 _this.log.error('视图实例化失败，错误的viewContainer参数:\n', viewParam)
                 return false
             }
+            el_view_ctn.className = el_view_ctn.className + ' ' + CONSTANTS.CLASS_NAME.VIEW_CONTAINER
             _private.setViewContainerInstance(el_view_ctn)
+            var el_view_wrapper = document.createElement("div")
+            el_view_wrapper.className = CONSTANTS.CLASS_NAME.VIEW_WRAPPER
+            el_view_ctn.appendChild(el_view_wrapper)
+            _private.setViewWrapperInstance(el_view_wrapper)
             return true
         }
     }
@@ -288,6 +320,21 @@ const Core = function(userConfig) {
     }
 
     /**
+     * 设置viewWrapper
+     * @param {Element} el
+     */
+    function setViewWrapper(el) {
+        instances.viewWrapper = el
+    }
+
+    /**
+     * 获取viewWrapper
+     */
+    function getViewWrapper() {
+        return instances.viewWrapper
+    }
+
+    /**
      * 监听currentId
      */
     function currentPageIdWatcher() {
@@ -326,15 +373,16 @@ const Core = function(userConfig) {
     };
 
     /**
-     * 通过routeConfig生成route实例
-     * @param {Object} routeConfig
+     * 生成route实例
+     * @param {Object} options
      */
-    function createRouteInstanceByConfig(routeConfig) {
-        var route = null
-        if (routeConfig.hasOwnProperty('id') && _this.getRouteInstance(routeConfig.id)) {
-            route = _this.getRouteInstance(routeConfig.id)
-        } else {
-            route = new Route(_this, routeConfig)
+    function createRouteInstance(options, sourcePageId) {
+        let route = null
+        if (options.hasOwnProperty('id')) {
+            route = _this.getRouteInstance(options.id)
+        }
+        if (!route) {
+            route = new Route(_this, options, sourcePageId)
             _private.addRouteInstance(route)
         }
         return route
@@ -366,22 +414,13 @@ const Core = function(userConfig) {
      */
     function getRouteInstanceByUrl(url) {
         var routeInstances = _this.getRouteInstances()
-        for (var routeId in routeInstances) {
-            var route = routeInstances[routeId]
-            if (getUrlWithoutQuery(route.url) === getUrlWithoutQuery(url)) {
+        for (const routeId in routeInstances) {
+            const route = routeInstances[routeId];
+            if (route.url.indexOf(url) !== -1) {
                 return route
             }
         }
         return false
-
-        // 获取不带query参数的url
-        function getUrlWithoutQuery(u) {
-            try {
-                return u.split('?')[0]
-            } catch (error) {
-                return ''
-            }
-        }
     };
 
     /**
@@ -532,14 +571,14 @@ const Core = function(userConfig) {
             var route = _this.getRouteInstance(pageInstances[pageId].routeId)
             routeHistory.push(route)
         }
-        window.localStorage.setItem(constants.localStorage.routeHistory, JSON.stringify(routeHistory))
+        window.localStorage.setItem(CONSTANTS.LOCAL_STORAGE.ROUTE_HISTORY, JSON.stringify(routeHistory))
     }
 
     /**
      * 加载本地缓存页面
      */
     function loadLocalCache() {
-        var temp = window.localStorage.getItem(constants.localStorage.routeHistory)
+        var temp = window.localStorage.getItem(CONSTANTS.LOCAL_STORAGE.ROUTE_HISTORY)
         if (temp) {
             return JSON.parse(temp)
         } else {
@@ -551,7 +590,7 @@ const Core = function(userConfig) {
      * 清除本地缓存页面
      */
     function clearLocalCache() {
-        window.localStorage.setItem(constants.localStorage.routeHistory, '')
+        window.localStorage.setItem(CONSTANTS.LOCAL_STORAGE.ROUTE_HISTORY, '')
     }
 
     /**
@@ -559,7 +598,7 @@ const Core = function(userConfig) {
      * @param {Object} payload 
      */
     function setPagePayloadByRouteId(routeId, payload) {
-        window[constants.parentPayloadName][routeId] = payload
+        window[CONSTANTS.PARENT_PAYLOAD_NAME][routeId] = payload
     }
 
     /**
@@ -583,9 +622,9 @@ const Core = function(userConfig) {
             state.isShowAllTitle = boolean
         }
         if (state.isShowAllTitle) {
-            _this.getTitleContainerInstance().className = _this.getTitleContainerInstance().className + ' ' + constants.className.titleContainerShowMore
+            _this.getTitleContainerInstance().className = _this.getTitleContainerInstance().className + ' ' + CONSTANTS.CLASS_NAME.TITLE_CONTAINER_SHOW_MORE
         } else {
-            _this.getTitleContainerInstance().className = replaceAll(_this.getTitleContainerInstance().className, ' ' + constants.className.titleContainerShowMore)
+            _this.getTitleContainerInstance().className = replaceAll(_this.getTitleContainerInstance().className, ' ' + CONSTANTS.CLASS_NAME.TITLE_CONTAINER_SHOW_MORE)
         }
     }
 
@@ -600,7 +639,7 @@ const Core = function(userConfig) {
      * 消息接收器
      */
     function messageReceiver(message) {
-        if (message.data && message.data.type === constants.postMessageType) {
+        if (message.data && message.data.type === CONSTANTS.POST_MESSAGE_TYPE) {
             let data = message.data
             if (data.to) {
                 let pageId = data.to
@@ -616,7 +655,7 @@ const Core = function(userConfig) {
 }
 
 // version
-Core.version = constants.verions
+Core.version = CONSTANTS.VERSION
 
 function showHelpInfo() {
     let helpInfo = '%c********Page标签页框架帮助********\n' +
@@ -639,15 +678,15 @@ function showHelpInfo() {
 
 function showConfig() {
     let api = {}
-    for (const key in defaultConfig) {
-        if (defaultConfig.hasOwnProperty(key)) {
-            let ValidType = defaultConfig[key].type
+    for (const key in configRules) {
+        if (configRules.hasOwnProperty(key)) {
+            let ValidType = configRules[key].type
             if (ValidType) {
                 ValidType = typeof ValidType === 'object' ? ValidType.map(type => type.name).join(',') : ValidType.name
             } else {
                 ValidType = '无限制'
             }
-            api[key] = Object.assign({}, defaultConfig[key], { type: ValidType })
+            api[key] = Object.assign({}, configRules[key], { type: ValidType })
         }
     }
     console.table(api, ['type', 'default', 'desc'])

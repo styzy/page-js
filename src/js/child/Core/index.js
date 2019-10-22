@@ -1,6 +1,6 @@
 import Router from './Router'
 import AloneRouter from './AloneRouter'
-import constants from '../../constants'
+import CONSTANTS from '../../CONSTANTS'
 
 const Core = function(initCallback) {
     let isChild = checkParent()
@@ -33,7 +33,7 @@ function initByParent() {
         window.init && window.init(router, router.getGlobalData())
     })
     window.addEventListener('message', function(data) {
-        if (data && data.data && data.data.type === constants.postMessageType) {
+        if (data && data.data && data.data.type === CONSTANTS.POST_MESSAGE_TYPE) {
             if (typeof router.messageReceiver === 'function') {
                 let msg = data.data
                 router.messageReceiver(msg)

@@ -1,5 +1,5 @@
-import constants from '../../../../constants'
-import { replaceAll, stopDefaultEvent } from '../../../utils'
+import CONSTANTS from '../../../../CONSTANTS'
+import { replaceAll, stopDefaultEvent } from '../../../../utils'
 /**
  * Title类定义
  * @param {Page} page
@@ -8,6 +8,7 @@ const Title = function(core, page) {
     var _this = this
 
     this.page = page
+    this.el_wrapper = getWrapper()
     this.el = null
     this.createDom = createDom
     this.appendDom = appendDom
@@ -18,59 +19,68 @@ const Title = function(core, page) {
     this.update = update
     this.titleMoreCheck = titleMoreCheck
 
+    function getWrapper() {
+        let titleWrapper = core.getRouteInstance(_this.page.routeId).titleWrapper,
+            el_wrapper = null
+        if (typeof titleWrapper === 'string') {
+            el_wrapper = document.querySelector(titleWrapper)
+        }
+        if (titleWrapper instanceof HTMLElement) {
+            el_wrapper = titleWrapper
+        }
+        el_wrapper = el_wrapper || core.getTitleWrapperInstance()
+        return el_wrapper
+    }
+
     function createDom() {
-        var route = core.getRouteInstance(_this.page.routeId)
-        var el_wrapper = document.createElement('div')
-        el_wrapper.className = constants.className.title.wrapper
-        el_wrapper.addEventListener('click', titleClickHandler)
+        let route = core.getRouteInstance(_this.page.routeId),
+            el_title = null
 
-        if (route.iconfont) {
-            var el_iconfont = document.createElement('i')
-            el_iconfont.className = constants.className.title.icon + ' ' + route.iconfont
-            el_wrapper.appendChild(el_iconfont)
-        }
-        if (route.icon) {
-            var el_icon = document.createElement('img')
-            el_icon.className = constants.className.title.icon
-            el_icon.src = route.icon
-            el_wrapper.appendChild(el_icon)
-        }
-        if (route.title !== false) {
-            var el_content = document.createElement('span')
-            el_content.className = constants.className.title.content
-            el_content.innerHTML = route.title || route.url
-            el_wrapper.appendChild(el_content)
-        }
-
-        var el_close;
-
-        // 使用iconfont作为close图标
-        if (core.config.closeIconfontClass) {
-            el_close = document.createElement('i')
-            el_close.className = constants.className.title.close + ' ' + core.config.closeIconfontClass
+        if (route.titleCreator) {
+            el_title = route.titleCreator(route.title, closeClickHandler, titleClickHandler, contextMenuHandler)
+            if (!(el_title instanceof HTMLElement)) {
+                core.log.error(`titleCreator方法需要返回HTMLElement类型参数`)
+                return false
+            }
         } else {
-            el_close = document.createElement("span")
-            el_close.className = constants.className.title.close + ' ' + core.config.closeClass
+            el_title = document.createElement('div')
+            el_title.className = CONSTANTS.CLASS_NAME.TITLE.WRAPPER
+            el_title.addEventListener('click', titleClickHandler)
+
+            // 图标渲染
+            let icon = route.titleIcon || core.config.titleIcon
+            if (typeof icon === 'function') {
+                icon = icon(route)
+            }
+            if (icon) {
+                let el_icon = createIconElement(icon)
+                el_title.appendChild(el_icon)
+            }
+
+            // 标题内容渲染
+            if (route.title !== false) {
+                let title = route.title || route.url
+                if (typeof title === 'function') {
+                    title = title(route)
+                }
+                let el_content = createContentElement(title)
+                el_title.appendChild(el_content)
+            }
+
+            // 标题关闭按钮渲染
+            if (route.closeEnable) {
+                let closeButton = route.titleCloseButton || core.config.titleCloseButton
+                if (typeof closeButton === 'function') {
+                    closeButton = closeButton(route)
+                }
+                let el_closeButton = createCloseButtonElement(closeButton)
+                el_title.appendChild(el_closeButton)
+            }
+
+            el_title.addEventListener('contextmenu', contextMenuHandler)
         }
 
-        if (route.userClose) {
-            el_close.addEventListener('click', closeClickHandler)
-        } else {
-            el_close.className = el_close.className + ' ' + constants.className.title.disableClose
-        }
-
-        el_wrapper.appendChild(el_close)
-
-        _this.el = el_wrapper
-
-        if (route.contextMenuEnable) {
-            el_wrapper.addEventListener('contextmenu', contextMenuHandler)
-        }
-
-        function closeClickHandler(e) {
-            core.router && core.router.close(_this.page.id)
-            return stopDefaultEvent(e)
-        }
+        _this.el = el_title
 
         function titleClickHandler() {
             if (_this.page.id != core.getCurrentPageId()) {
@@ -78,7 +88,53 @@ const Title = function(core, page) {
             }
         }
 
+        function createIconElement(icon) {
+            let el = document.createElement('div')
+            el.className = CONSTANTS.CLASS_NAME.TITLE.ICON
+            if (icon instanceof HTMLElement) {
+                el.appendChild(icon)
+            } else {
+                el.innerHTML = icon
+            }
+            return el
+        }
+
+        function createContentElement(title) {
+            let el = document.createElement('div')
+            el.className = CONSTANTS.CLASS_NAME.TITLE.CONTENT
+            if (title instanceof HTMLElement) {
+                el.appendChild(title)
+            } else {
+                el.innerHTML = title
+            }
+            return el
+        }
+
+        function createCloseButtonElement(closeButton) {
+            let el = document.createElement('div')
+            el.className = CONSTANTS.CLASS_NAME.TITLE.CLOSE
+            if (!closeButton) {
+                closeButton = 'x'
+                el.className += ` ${CONSTANTS.CLASS_NAME.TITLE.CLOSE_DEFAULT}`
+            }
+            if (closeButton instanceof HTMLElement) {
+                el.appendChild(closeButton)
+            } else {
+                el.innerHTML = closeButton
+            }
+            el.addEventListener('click', closeClickHandler)
+            return el
+        }
+
+        function closeClickHandler(e) {
+            core.router && core.router.close(_this.page.id)
+            return stopDefaultEvent(e)
+        }
+
         function contextMenuHandler(e) {
+            if (!route.contextMenuEnable) {
+                return false
+            }
             var existContextMenu = core.getContextMenuInstance()
             if (existContextMenu) {
                 existContextMenu.close()
@@ -101,27 +157,28 @@ const Title = function(core, page) {
             core.log.error('插title失败，请先执行createDom方法')
             return false
         }
-        core.getTitleWrapperInstance().appendChild(_this.el)
+        _this.el_wrapper.appendChild(_this.el)
     }
 
     function removeDom() {
-        core.getTitleWrapperInstance().removeChild(_this.el)
+        _this.el_wrapper.removeChild(_this.el)
     }
 
     function focus() {
-        if (_this.el.className.indexOf(constants.className.title.focus) == -1) {
-            _this.el.className = _this.el.className + ' ' + constants.className.title.focus
+        if (_this.el.className.indexOf(CONSTANTS.CLASS_NAME.TITLE.FOCUS) == -1) {
+            _this.el.className = _this.el.className + ' ' + CONSTANTS.CLASS_NAME.TITLE.FOCUS
         }
     }
 
     function blur() {
-        if (_this.el.className.indexOf(constants.className.title.focus) != -1) {
-            _this.el.className = replaceAll(_this.el.className, ' ' + constants.className.title.focus)
+        if (_this.el.className.indexOf(CONSTANTS.CLASS_NAME.TITLE.FOCUS) != -1) {
+            _this.el.className = replaceAll(_this.el.className, ' ' + CONSTANTS.CLASS_NAME.TITLE.FOCUS)
         }
     }
 
     function setTitle(title) {
-        _this.el.querySelector('.' + constants.className.title.content).innerHTML = title
+        let el_content = _this.el.querySelector(`.${CONSTANTS.CLASS_NAME.TITLE.CONTENT}`)
+        if (el_content) el_content.innerHTML = title
     }
 
     function update(needReRender) {
@@ -136,10 +193,12 @@ const Title = function(core, page) {
     }
 
     function titleMoreCheck() {
-        var titleList = core.getPageInstanceIdList()
+        // var titleList = core.getPageInstanceIdList()
+        var titleList = core.getTitleWrapperInstance().querySelectorAll(`.${CONSTANTS.CLASS_NAME.TITLE.WRAPPER}`)
         var totalWidth = 0
         for (var i = 0; i < titleList.length; i++) {
-            var titleEl = core.getPageInstance(titleList[i]).title.el
+            // var titleEl = core.getPageInstance(titleList[i]).title.el
+            var titleEl = titleList[i]
             var styles = window.getComputedStyle(titleEl)
             var titleWidth = px2num(styles['width']) + px2num(styles['marginLeft']) + px2num(styles['marginRight'])
             if (styles['paddingLeft'] != 'border-box') {
@@ -148,15 +207,14 @@ const Title = function(core, page) {
             totalWidth = totalWidth + titleWidth
         }
         if (!core.getTitleMoreShowState()) {
-            if (totalWidth > px2num(window.getComputedStyle(core.getTitleWrapperInstance())['width'])) {
+            let containerWidth = px2num(window.getComputedStyle(core.getTitleWrapperInstance())['width'])
+            if (totalWidth > containerWidth) {
                 core.getTitleMoreInstance().style.display = 'block'
             } else {
                 core.getTitleMoreInstance().style.display = 'none'
             }
         }
-        //			if(window.getComputedStyle(core.getTitleWrapperInstance())['height'] > window.getComputedStyle(core.getTitleContainerInstance())['height']) {
-        //			} else{
-        //			}
+
         function px2num(str) {
             return parseFloat(replaceAll(str, 'px'))
         }
