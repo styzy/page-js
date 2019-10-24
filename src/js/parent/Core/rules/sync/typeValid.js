@@ -13,7 +13,14 @@ const typeValid = function(value, requireTypes) {
     } else {
         valueType = Object.prototype.toString.call(value).substr(8).replace(']', '')
     }
-    return requireTypes.some(requireType => requireType.name === valueType)
+    return requireTypes.some(requireType => {
+        let name = requireType.name || getFnName(requireType)
+        return name === valueType
+    })
+
+    function getFnName(fn) {
+        return fn.toString().match(/^\s*function (\w+)/)[1]
+    }
 }
 
 export default typeValid
