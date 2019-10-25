@@ -1,6 +1,27 @@
 {
-    "name": "es7-project",
-    "description": "es7-project",
+    "name": "@styzy/page-js",
+    "version": "1.1.1",
+    "description": "An TAB Framework For Web",
+    "keywords": [
+        "page",
+        "tab",
+        "page-js",
+        "tab-page"
+    ],
+    "author": {
+        "name": "STYZY",
+        "email": "styzyreal@126.com",
+        "url": "https://our.styzy.cn"
+    },
+    "bugs": {
+        "url": "https://github.com/styzy/page/issues",
+        "email": "styzyreal@126.com"
+    },
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/styzy/page"
+    },
     "scripts": {
         "dev": "webpack-dev-server --mode=development --open --hot",
         "build": "webpack --mode=production"
