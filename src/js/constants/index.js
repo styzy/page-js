@@ -88,7 +88,7 @@ const CONSTANTS = {
     // 页面间通信标识
     POST_MESSAGE_TYPE: 'page-message',
     // 版本号
-    VERSION: '1.1.3'
+    VERSION: '1.1.5'
 }
 
 export default CONSTANTS
