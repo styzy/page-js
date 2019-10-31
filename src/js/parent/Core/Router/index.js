@@ -181,13 +181,14 @@ const Router = function(core) {
      * @param {String} targetPageId 
      */
     function postMessage(data, targetPageId) {
-        var postData = {
+        var message = {
             type: CONSTANTS.POST_MESSAGE_TYPE,
             from: '',
             to: targetPageId,
             data: data
         }
-        window.postMessage(postData, '*')
+        message = JSON.stringify(message)
+        window.postMessage(message, '*')
     }
 
     /**

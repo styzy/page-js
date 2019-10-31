@@ -138,6 +138,7 @@ const Core = function(userConfig) {
         }
     }
 
+    // 监听消息
     window.addEventListener('message', _private.messageReceiver)
 
     return this.router
@@ -639,15 +640,24 @@ const Core = function(userConfig) {
      * 消息接收器
      */
     function messageReceiver(message) {
-        if (message.data && message.data.type === CONSTANTS.POST_MESSAGE_TYPE) {
-            let data = message.data
-            if (data.to) {
-                let pageId = data.to
+        message = message.data
+        if (typeof message === 'string') {
+            try {
+                message = JSON.parse(message)
+            } catch (error) {
+                return false
+            }
+        } else {
+            return false
+        }
+        if (message && message.type === CONSTANTS.POST_MESSAGE_TYPE) {
+            if (message.to) {
+                let pageId = message.to
                 let page = _this.getPageInstance(pageId)
-                page.postMessage(data)
+                page.postMessage(message)
             } else {
                 if (typeof _this.config.onMessage === 'function') {
-                    _this.config.onMessage(data)
+                    _this.config.onMessage(message)
                 }
             }
         }

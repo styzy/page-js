@@ -24,7 +24,7 @@
     <p>在第一个页面查看接收的消息</p>
     <script>
         window.init = function(page, globalPayload) {
-            let pagePayload = page.getPageData()
+            var pagePayload = page.getPageData()
 
             window.openNew = function() {
                 page.open('http://www.baidu.com')

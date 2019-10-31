@@ -32,11 +32,20 @@ function initByParent() {
     window.addEventListener('load', function() {
         window.init && window.init(router, router.getGlobalData())
     })
-    window.addEventListener('message', function(data) {
-        if (data && data.data && data.data.type === CONSTANTS.POST_MESSAGE_TYPE) {
+    window.addEventListener('message', function(message) {
+        message = message.data
+        if (typeof message === 'string') {
+            try {
+                message = JSON.parse(message)
+            } catch (error) {
+                return false
+            }
+        } else {
+            return false
+        }
+        if (message && message.type === CONSTANTS.POST_MESSAGE_TYPE) {
             if (typeof router.messageReceiver === 'function') {
-                let msg = data.data
-                router.messageReceiver(msg)
+                router.messageReceiver(message)
             }
         }
     })

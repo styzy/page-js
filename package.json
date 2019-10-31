@@ -1,6 +1,6 @@
 {
     "name": "@styzy/page-js",
-    "version": "1.1.5",
+    "version": "1.2.0",
     "description": "An TAB Framework For Web",
     "keywords": [
         "page",
@@ -27,9 +27,12 @@
         "build": "webpack --mode=production"
     },
     "devDependencies": {
-        "@babel/cli": "^7.4.4",
-        "@babel/core": "^7.4.5",
-        "@babel/preset-env": "^7.4.5",
+        "@babel/cli": "^7.6.4",
+        "@babel/core": "^7.6.4",
+        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+        "@babel/plugin-transform-modules-commonjs": "^7.6.0",
+        "@babel/plugin-transform-runtime": "^7.6.2",
+        "@babel/preset-env": "^7.6.3",
         "autoprefixer": "^9.6.1",
         "babel-loader": "^8.0.6",
         "css-loader": "^3.0.0",
@@ -43,5 +46,8 @@
         "webpack": "^4.35.2",
         "webpack-cli": "^3.3.5",
         "webpack-dev-server": "^3.7.2"
+    },
+    "dependencies": {
+        "@babel/runtime-corejs3": "^7.6.3"
     }
 }

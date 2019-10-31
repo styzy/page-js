@@ -4,7 +4,7 @@
  * @param {*} requireTypes 
  */
 const typeValid = function(value, requireTypes) {
-    if (typeof requireTypes === 'function') {
+    if (!(requireTypes instanceof Array)) {
         requireTypes = [requireTypes]
     }
     let valueType = ''
@@ -14,8 +14,12 @@ const typeValid = function(value, requireTypes) {
         valueType = Object.prototype.toString.call(value).substr(8).replace(']', '')
     }
     return requireTypes.some(requireType => {
-        let name = requireType.name || getFnName(requireType)
-        return name === valueType
+        if (requireType === HTMLElement) {
+            return valueType === 'HTMLElement'
+        } else {
+            let name = requireType.name || getFnName(requireType)
+            return name === valueType
+        }
     })
 
     function getFnName(fn) {

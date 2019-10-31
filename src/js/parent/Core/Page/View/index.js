@@ -149,6 +149,9 @@ const View = function(core, page) {
             return false
         }
         var iframeWindow = _this.el.contentWindow
+
+        // IE9兼容
+        message = JSON.stringify(message)
         iframeWindow.postMessage(message, '*')
     }
 }

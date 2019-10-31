@@ -50,13 +50,14 @@ const Router = function() {
     }
 
     function postMessage(data, targetPageId) {
-        var postData = {
+        var message = {
             type: CONSTANTS.POST_MESSAGE_TYPE,
             from: pageId,
             to: targetPageId,
             data: data
         }
-        window.top.postMessage(postData, '*')
+        message = JSON.stringify(message)
+        window.top.postMessage(message, '*')
     }
 
     function setTitle(title) {
