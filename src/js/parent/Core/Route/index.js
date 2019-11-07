@@ -1,4 +1,5 @@
-import { routeRules, sync, globalRouteRules } from '../rules'
+import { routeRules, globalRouteRules } from '../rules'
+import { sync } from '../../../utils'
 import CONSTANTS from '../../../CONSTANTS'
 
 // Route类定义

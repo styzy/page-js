@@ -5,12 +5,15 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const webpackConfig = {
     entry: {
-        'page.parent': './src/js/parent/index.js',
-        'page.child': './src/js/child/index.js'
+        'parent': './src/js/parent/index.js',
+        'child': './src/js/child/index.js',
+        'core': './src/js/index.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'js/[name].min.js'
+        filename: 'js/page.[name].min.js',
+        // library: '[name]Page',
+        libraryTarget: 'umd'
     },
     devServer: {
         openPage: 'index.html'
@@ -52,13 +55,13 @@ const webpackConfig = {
     plugins: [
         new UglifyJSPlugin(),
         new MiniCssExtractPlugin({
-            filename: 'css/[name].css',
+            filename: 'css/page.[name].css',
             chunkFilename: '[id].css',
             ignoreOrder: false, // Enable to remove warnings about conflicting order
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            chunks: ['page.parent'],
+            chunks: ['parent'],
             title: 'Page 前端标签页框架',
             template: './src/template/index.html',
             inject: 'head',
@@ -67,7 +70,7 @@ const webpackConfig = {
         }),
         new HtmlWebpackPlugin({
             filename: './module/home.html',
-            chunks: ['page.child'],
+            chunks: ['child'],
             template: './src/template/module/home.html',
             inject: 'head',
             hash: true,
@@ -75,7 +78,7 @@ const webpackConfig = {
         }),
         new HtmlWebpackPlugin({
             filename: './module/module1.html',
-            chunks: ['page.child'],
+            chunks: ['child'],
             template: './src/template/module/module1.html',
             inject: 'head',
             hash: true,
@@ -83,7 +86,7 @@ const webpackConfig = {
         }),
         new HtmlWebpackPlugin({
             filename: './module/module2.html',
-            chunks: ['page.child'],
+            chunks: ['child'],
             template: './src/template/module/module2.html',
             inject: 'head',
             hash: true,

@@ -1,3 +1,7 @@
+import sync from '@styzy/utils-configuration-sync'
+
+export { sync }
+
 /**
  * 字符串替换方法
  * @param {String} str 源字符串
@@ -46,6 +50,7 @@ export function stopDefaultEvent(event) {
 }
 
 export default {
+    sync,
     replaceAll,
     isCrossOrigin,
     stopDefaultEvent

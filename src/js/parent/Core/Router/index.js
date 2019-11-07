@@ -22,7 +22,6 @@ const Router = function(core) {
      */
     function open(options, sourcePageId) {
         sourcePageId = sourcePageId || null
-        let pageId = null
         switch (typeof options) {
             case 'string':
                 options = {
@@ -35,6 +34,11 @@ const Router = function(core) {
             default:
                 core.log.error('打开页面失败，接收的参数类型为String|Object|Route实例，而不是' + typeof options)
                 return false
+        }
+
+        if (!options.url) {
+            core.log.error('打开页面失败，url不可为空')
+            return false
         }
 
         let route = createRoute(options)

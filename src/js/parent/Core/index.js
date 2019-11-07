@@ -129,7 +129,6 @@ const Core = function(userConfig) {
     // devMode开启时window挂载开发数据
     if (this.config.devMode) {
         // 显示帮助信息
-        showHelpInfo()
         window[CONSTANTS.DEV_MODE_WINDOW_DATA_NAME] = {
             instances: instances,
             instanceCount: instanceCount,
@@ -667,38 +666,4 @@ const Core = function(userConfig) {
 // version
 Core.version = CONSTANTS.VERSION
 
-function showHelpInfo() {
-    let helpInfo = '%c********Page标签页框架帮助********\n' +
-        '\n输入对应的命令查看帮助(本帮助功能仅在devMode下有效):\n' +
-        '\n1.查看实例化配置\n' +
-        'Page.api.showConfig()\n' +
-        '\n2.查看父页面路由方法\n' +
-        'Page.api.showParentRouter()\n' +
-        '\n3.查看子页面路由方法\n' +
-        'Page.api.showParentRouter()\n' +
-        '\n********************************'
-    let helpStyle = 'color:#00a1d6;'
-    console.log(helpInfo, helpStyle)
-
-    // 挂载API文档
-    Core.api = {
-        showConfig: showConfig
-    }
-}
-
-function showConfig() {
-    let api = {}
-    for (const key in configRules) {
-        if (configRules.hasOwnProperty(key)) {
-            let ValidType = configRules[key].type
-            if (ValidType) {
-                ValidType = typeof ValidType === 'object' ? ValidType.map(type => type.name).join(',') : ValidType.name
-            } else {
-                ValidType = '无限制'
-            }
-            api[key] = Object.assign({}, configRules[key], { type: ValidType })
-        }
-    }
-    console.table(api, ['type', 'default', 'desc'])
-}
 export default Core

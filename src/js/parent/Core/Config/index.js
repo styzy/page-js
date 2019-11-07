@@ -1,4 +1,5 @@
-import { configRules, globalRouteRules, sync } from '../rules'
+import { configRules, globalRouteRules } from '../rules'
+import { sync } from '../../../utils'
 
 const Config = function(userConfig) {
     let config = null

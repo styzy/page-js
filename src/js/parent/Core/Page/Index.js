@@ -45,9 +45,17 @@ const Page = function(core, routeId) {
 
     // 关闭页面
     function close() {
-        var nextId = getNextPageId()
-        typeof core.config.onClose == 'function' && core.config.onClose(_this.id, nextId)
-        typeof core.getRouteInstance(_this.routeId).onClose == 'function' && core.getRouteInstance(_this.routeId).onClose(_this.id, nextId)
+        let currentPageId = core.getCurrentPageId(),
+            nextId = null
+        if (_this.id === currentPageId) {
+            nextId = getNextPageId()
+        }
+        if (typeof core.config.onClose === 'function') {
+            core.config.onClose(_this.id, nextId)
+        }
+        if (typeof core.getRouteInstance(_this.routeId).onClose === 'function') {
+            core.getRouteInstance(_this.routeId).onClose(_this.id, nextId)
+        }
         if (nextId) {
             core.setCurrentPageId(nextId)
         }
