@@ -44,8 +44,13 @@ function initByParent() {
             return false
         }
         if (message && message.type === CONSTANTS.POST_MESSAGE_TYPE) {
-            if (typeof router.messageReceiver === 'function') {
-                router.messageReceiver(message)
+            let messageReceiver = router.getMessageReceiver()
+            if (!messageReceiver && router.messageReceiver) {
+                console.warn('messageReceiver消息接收器即将废弃，建议使用setMessageReceiver()代替')
+                messageReceiver = router.messageReceiver
+            }
+            if (typeof messageReceiver === 'function') {
+                messageReceiver(message)
             }
         }
     })

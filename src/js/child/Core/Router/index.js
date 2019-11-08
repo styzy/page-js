@@ -7,22 +7,25 @@ const Router = function() {
     let pageId = window.name
     let routeId = parentCore.getPageInstance(pageId).routeId
     let route = parentCore.getRouteInstance(routeId)
+    let messageReceiver = null
 
     this.open = open
-    this.close = close
-    this.closeAll = parentRouter.closeAll
     this.reload = reload
     this.redirect = redirect
-    this.syncHeight = syncHeight
+    this.close = close
+    this.closeAll = closeAll
     this.postMessage = postMessage
-    this.messageReceiver = null
+    this.setMessageReceiver = setMessageReceiver
+    this.getMessageReceiver = getMessageReceiver
+    this.syncHeight = syncHeight
     this.setTitle = setTitle
     this.getPageId = getPageId
     this.getSourcePageId = getSourcePageId
     this.getPageData = getPagePayload
     this.getGlobalData = getGlobalPayload
-    this.getParentPage = getParentRouter
-    this.getConfig = getConfig
+    // this.getParentPage = getParentRouter
+    // this.getConfig = getConfig
+    this.messageReceiver = null
     this.recoverCache = parentRouter.recoverCache
     this.clearCache = parentRouter.clearCache
 
@@ -30,23 +33,23 @@ const Router = function() {
         return parentRouter.open(options, pageId)
     }
 
-    function close(targetPageId) {
-        targetPageId = targetPageId || pageId
-        parentRouter.close(targetPageId)
-    }
-
     function reload(targetPageId) {
         targetPageId = targetPageId || pageId
-        parentRouter.reload(targetPageId)
+        return parentRouter.reload(targetPageId)
     }
 
     function redirect(url, targetPageId) {
         targetPageId = targetPageId || pageId
-        parentRouter.redirect(url, targetPageId)
+        return parentRouter.redirect(url, targetPageId)
     }
 
-    function syncHeight() {
-        parentRouter.syncHeightByPageId(pageId)
+    function close(targetPageId) {
+        targetPageId = targetPageId || pageId
+        return parentRouter.close(targetPageId)
+    }
+
+    function closeAll() {
+        return parentRouter.closeAll()
     }
 
     function postMessage(data, targetPageId) {
@@ -58,6 +61,22 @@ const Router = function() {
         }
         message = JSON.stringify(message)
         window.top.postMessage(message, '*')
+    }
+
+    function setMessageReceiver(receiver) {
+        if (typeof receiver === 'function') {
+            messageReceiver = receiver
+        } else {
+            parentCore.log.error(`messageReceiver必须为function，而不是${typeof receiver}`)
+        }
+    }
+
+    function getMessageReceiver() {
+        return messageReceiver
+    }
+
+    function syncHeight() {
+        parentRouter.syncHeight(pageId)
     }
 
     function setTitle(title) {

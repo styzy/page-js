@@ -6,15 +6,15 @@ const Router = function(core) {
 
     // 公有方法
     this.open = open
-    this.close = close
-    this.closeAll = closeAll
     this.reload = reload
     this.redirect = redirect
+    this.close = close
+    this.closeAll = closeAll
+    this.postMessage = postMessage
+    this.syncHeight = syncHeight
+    this.setTitle = setTitleByPageId
     this.recoverCache = recoverCache
     this.clearCache = clearCache
-    this.syncHeightByPageId = syncHeightByPageId
-    this.postMessage = postMessage
-    this.setTitle = setTitleByPageId
 
     /**
      * 打开页面
@@ -172,7 +172,7 @@ const Router = function(core) {
      * 通过pageId同步子页面高度
      * @param {String} pageId 
      */
-    function syncHeightByPageId(pageId) {
+    function syncHeight(pageId) {
         var page = core.getPageInstance(pageId)
         if (page) {
             page.syncHeight()

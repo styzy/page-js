@@ -24,6 +24,7 @@
     <p>在第一个页面查看接收的消息</p>
     <script>
         window.init = function(page, globalPayload) {
+            window.page = page
             var pagePayload = page.getPageData()
 
             window.openNew = function() {

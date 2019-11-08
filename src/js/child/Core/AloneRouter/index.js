@@ -3,19 +3,21 @@ const AloneRouter = function() {
     let empty = () => {}
 
     this.open = open
-    this.close = window.close
-    this.closeAll = window.close
     this.reload = window.location.reload
     this.redirect = window.location.replace
-    this.syncHeight = empty
+    this.close = window.close
+    this.closeAll = window.close
     this.postMessage = empty
+    this.setMessageReceiver = empty
+    this.getMessageReceiver = empty
+    this.syncHeight = empty
     this.setTitle = setTitle
     this.getPageId = empty
     this.getSourcePageId = empty
     this.getPageData = empty
     this.getGlobalData = empty
-    this.getParentRouter = empty
-    this.getConfig = empty
+    // this.getParentRouter = empty
+    // this.getConfig = empty
     this.recoverCache = empty
     this.clearCache = empty
 
