@@ -1,4 +1,7 @@
 const CONSTANTS = {
+    // 版本号
+    VERSION: '1.2.3',
+    // 选择器
     SELECTOR: {
         // 路由元素
         ROUTE_ELEMENT: '[page-href]'
@@ -86,9 +89,7 @@ const CONSTANTS = {
     // 子页面初始化方法名称
     CHILD_INIT_CALLBACK_NAME: 'init',
     // 页面间通信标识
-    POST_MESSAGE_TYPE: 'page-message',
-    // 版本号
-    VERSION: '1.2.2'
+    POST_MESSAGE_TYPE: 'page-message'
 }
 
 export default CONSTANTS

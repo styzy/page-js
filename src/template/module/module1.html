@@ -8,6 +8,12 @@
 
 <body>
     <h1>基本方法</h1>
+    <h3>刷新</h3>
+    <button type="button" onclick="reload()">刷新</button>
+    <h3>重定向</h3>
+    <button type="button" onclick="redirect()">重定向</button>
+    <h3>关闭页面</h3>
+    <button type="button" onclick="closePage()">关闭页面</button>
     <h3>跳转</h3>
     <button type="button" onclick="openNew()">打开新标签页</button>
     <button type="button" onclick="redirect()">重定向</button>
@@ -26,6 +32,18 @@
         window.init = function(page, globalPayload) {
             window.page = page
             var pagePayload = page.getPageData()
+
+            window.reload = function() {
+                page.reload()
+            }
+
+            window.redirect = function() {
+                page.redirect('http://baidu.com')
+            }
+
+            window.closePage = function() {
+                page.close()
+            }
 
             window.openNew = function() {
                 page.open('http://www.baidu.com')

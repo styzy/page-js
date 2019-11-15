@@ -3,10 +3,10 @@ const AloneRouter = function() {
     let empty = () => {}
 
     this.open = open
-    this.reload = window.location.reload
-    this.redirect = window.location.replace
-    this.close = window.close
-    this.closeAll = window.close
+    this.reload = reload
+    this.redirect = redirect
+    this.close = close
+    this.closeAll = close
     this.postMessage = empty
     this.setMessageReceiver = empty
     this.getMessageReceiver = empty
@@ -26,6 +26,18 @@ const AloneRouter = function() {
             url = url.url
         }
         window.open(url)
+    }
+
+    function reload() {
+        window.location.reload()
+    }
+
+    function redirect(url) {
+        window.location.replace(url)
+    }
+
+    function close() {
+        window.close()
     }
 
     function setTitle(title) {
