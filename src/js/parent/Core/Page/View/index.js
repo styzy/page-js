@@ -1,4 +1,4 @@
-import { isCrossOrigin, replaceAll } from '../../../../utils'
+import { isCrossOrigin, replaceAll, isHTMLElement } from '../../../../utils'
 import CONSTANTS from '../../../../CONSTANTS'
 
 /**
@@ -29,7 +29,7 @@ const View = function(core, page) {
         if (typeof viewWrapper === 'string') {
             el_wrapper = document.querySelector(viewWrapper)
         }
-        if (viewWrapper instanceof HTMLElement) {
+        if (isHTMLElement(viewWrapper)) {
             el_wrapper = viewWrapper
         }
         el_wrapper = el_wrapper || core.getViewWrapperInstance()

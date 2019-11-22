@@ -1,4 +1,4 @@
-// import { stopDefaultEvent } from '../../../utils'
+import { isHTMLElement } from '../../../utils'
 import CONSTANTS from '../../../CONSTANTS'
 
 // ContextMenu类定义
@@ -89,8 +89,8 @@ const ContextMenu = function(core, route, position) {
             function createTitle(title) {
                 let el_title = document.createElement('div')
                 el_title.className = CONSTANTS.CLASS_NAME.CONTEXTMENU.TITLE
-                if (title instanceof HTMLElement) {
-                    el_title.appendChild(title)
+                if (isHTMLElement(title)) {
+                    el_title.appendChild(title.cloneNode(true))
                 } else {
                     el_title.innerHTML = title
                 }
@@ -104,8 +104,8 @@ const ContextMenu = function(core, route, position) {
                 let el_menu_icon = document.createElement('div')
                 el_menu_icon.className = CONSTANTS.CLASS_NAME.CONTEXTMENU.MENU_ICON
                 if (menu.icon) {
-                    if (menu.icon instanceof HTMLElement) {
-                        el_menu_icon.appendChild(menu.icon)
+                    if (isHTMLElement(menu.icon)) {
+                        el_menu_icon.appendChild(menu.icon.cloneNode(true))
                     } else {
                         let el_img = document.createElement('img')
                         el_img.src = menu.icon
@@ -116,8 +116,8 @@ const ContextMenu = function(core, route, position) {
 
                 let el_menu_name = document.createElement('div')
                 el_menu_name.className = CONSTANTS.CLASS_NAME.CONTEXTMENU.MENU_NAME
-                if (menu.name instanceof HTMLElement) {
-                    el_menu_name.appendChild(menu.name)
+                if (isHTMLElement(menu.name)) {
+                    el_menu_name.appendChild(menu.name.cloneNode(true))
                 } else {
                     el_menu_name.innerHTML = menu.name
                 }

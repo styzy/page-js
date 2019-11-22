@@ -1,6 +1,8 @@
-import sync from '@styzy/utils-configuration-sync'
+import sync, { isHTMLElement } from '@styzy/utils-configuration-sync'
 
 export { sync }
+
+export { isHTMLElement }
 
 /**
  * 字符串替换方法
@@ -51,6 +53,7 @@ export function stopDefaultEvent(event) {
 
 export default {
     sync,
+    isHTMLElement,
     replaceAll,
     isCrossOrigin,
     stopDefaultEvent

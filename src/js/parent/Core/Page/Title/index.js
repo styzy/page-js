@@ -1,5 +1,5 @@
 import CONSTANTS from '../../../../CONSTANTS'
-import { replaceAll, stopDefaultEvent } from '../../../../utils'
+import { replaceAll, stopDefaultEvent, isHTMLElement } from '../../../../utils'
 /**
  * Title类定义
  * @param {Page} page
@@ -25,7 +25,7 @@ const Title = function(core, page) {
         if (typeof titleWrapper === 'string') {
             el_wrapper = document.querySelector(titleWrapper)
         }
-        if (titleWrapper instanceof HTMLElement) {
+        if (isHTMLElement(titleWrapper)) {
             el_wrapper = titleWrapper
         }
         el_wrapper = el_wrapper || core.getTitleWrapperInstance()
@@ -38,7 +38,7 @@ const Title = function(core, page) {
 
         if (route.titleCreator) {
             el_title = route.titleCreator(route.title, closeClickHandler, titleClickHandler, contextMenuHandler)
-            if (!(el_title instanceof HTMLElement)) {
+            if (!isHTMLElement(el_title)) {
                 core.log.error(`titleCreator方法需要返回HTMLElement类型参数`)
                 return false
             }
@@ -91,8 +91,8 @@ const Title = function(core, page) {
         function createIconElement(icon) {
             let el = document.createElement('div')
             el.className = CONSTANTS.CLASS_NAME.TITLE.ICON
-            if (icon instanceof HTMLElement) {
-                el.appendChild(icon)
+            if (isHTMLElement(icon)) {
+                el.appendChild(icon.cloneNode(true))
             } else {
                 el.innerHTML = icon
             }
@@ -102,8 +102,8 @@ const Title = function(core, page) {
         function createContentElement(title) {
             let el = document.createElement('div')
             el.className = CONSTANTS.CLASS_NAME.TITLE.CONTENT
-            if (title instanceof HTMLElement) {
-                el.appendChild(title)
+            if (isHTMLElement(title)) {
+                el.appendChild(title.cloneNode(true))
             } else {
                 el.innerHTML = title
             }
@@ -117,8 +117,8 @@ const Title = function(core, page) {
                 closeButton = 'x'
                 el.className += ` ${CONSTANTS.CLASS_NAME.TITLE.CLOSE_DEFAULT}`
             }
-            if (closeButton instanceof HTMLElement) {
-                el.appendChild(closeButton)
+            if (isHTMLElement(closeButton)) {
+                el.appendChild(closeButton.cloneNode(true))
             } else {
                 el.innerHTML = closeButton
             }

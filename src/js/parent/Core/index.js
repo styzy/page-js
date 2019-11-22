@@ -5,8 +5,7 @@ import Router from './Router'
 import Route from './Route'
 import Page from './Page'
 import ContextMenu from './ContextMenu'
-import { replaceAll } from '../../utils'
-import { configRules } from './rules'
+import { replaceAll, isHTMLElement } from '../../utils'
 
 // 核心类定义
 const Core = function(userConfig) {
@@ -209,7 +208,7 @@ const Core = function(userConfig) {
             if (typeof titleParam === 'string') {
                 el_title_ctn = document.querySelector(titleParam)
             }
-            if (titleParam instanceof HTMLElement) {
+            if (isHTMLElement(titleParam)) {
                 el_title_ctn = titleParam
             }
             if (!titleParam) {
@@ -242,7 +241,7 @@ const Core = function(userConfig) {
             if (typeof viewParam === 'string') {
                 el_view_ctn = document.querySelector(viewParam)
             }
-            if (viewParam instanceof HTMLElement) {
+            if (isHTMLElement(viewParam)) {
                 el_view_ctn = viewParam
             }
             if (!el_view_ctn) {

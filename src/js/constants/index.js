@@ -1,6 +1,6 @@
 const CONSTANTS = {
     // 版本号
-    VERSION: '1.2.4',
+    VERSION: '1.2.5',
     // 选择器
     SELECTOR: {
         // 路由元素
