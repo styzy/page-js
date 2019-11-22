@@ -4,7 +4,8 @@ import View from './View'
 // Page类定义
 const Page = function(core, routeId) {
     var _this = this,
-        isRendered = false
+        isRendered = false,
+        renderUrl = ''
 
     this.id = core.createPageInstanceId()
     this.routeId = routeId
@@ -34,11 +35,17 @@ const Page = function(core, routeId) {
     function open() {
         let route = core.getRouteInstance(_this.routeId)
         let autoFocus = route.autoFocus
+
         if (!isRendered) {
+            renderUrl = route.url
+            isRendered = true
             createDom()
             appendDom()
-            isRendered = true
             _this.title.titleMoreCheck()
+        } else {
+            if (renderUrl !== route.url) {
+                update()
+            }
         }
         autoFocus && core.setCurrentPageId(_this.id)
     }
@@ -82,11 +89,12 @@ const Page = function(core, routeId) {
     }
 
     // 更新
-    function update(needReRender) {
-        needReRender = !!needReRender
-        _this.title.update(!!needReRender)
-        _this.view.update(!!needReRender)
-        if (needReRender && core.getCurrentPageId() === _this.id) {
+    function update() {
+        let route = core.getRouteInstance(_this.routeId)
+        renderUrl = route.url
+        _this.title.update(true)
+        _this.view.update(true)
+        if (core.getCurrentPageId() === _this.id) {
             _this.focus()
         }
     }

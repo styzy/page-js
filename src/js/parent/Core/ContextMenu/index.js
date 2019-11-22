@@ -155,7 +155,7 @@ const ContextMenu = function(core, route, position) {
             function devTools_sandboxMode(pageId, router) {
                 route.sandboxMode = !route.sandboxMode
                 route.update(route)
-                page.update(true)
+                page.update()
             }
         }
 

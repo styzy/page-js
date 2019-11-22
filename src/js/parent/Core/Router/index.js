@@ -44,9 +44,6 @@ const Router = function(core) {
         let route = createRoute(options)
         if (route) {
             let page = getPage(route)
-            if (route.checkUrlUpdate()) {
-                page.update()
-            }
             page.open()
             return page.id
         } else {
