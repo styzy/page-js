@@ -1,0 +1,200 @@
+@import './common.styl'
+@import './color.styl'
+@import './iconfont.styl'
+title-height = 40px
+.page-title-container
+	z-index 1
+	overflow hidden
+.page-title-wrapper
+	background #F4F5F6
+	white-space nowrap
+	margin-left 0
+	baseAcf()
+.page-title
+	display inline-block
+	height title-height
+	padding 0 5px
+	line-height title-height - 2px
+	font-size 14px
+	border-right 1px solid #F4F5F6
+	background-color #EEEEEE
+	box-sizing border-box
+	color #666666
+	cursor pointer
+	user-select none
+	img
+		display block
+		border none
+	&.page-title-focus
+		/* background-color: #FFFFFF;
+		color: #333333;
+		border-color: #FFFFFF; */
+		background-color color-theme
+		color #FFFFFF
+		border-color color-theme
+.page-title-icon
+	display inline-block
+	margin 0 5px
+	vertical-align middle
+.page-title-content
+	display inline-block
+	width 100px
+	margin 0 5px
+	overflow hidden
+	white-space nowrap
+	text-overflow ellipsis
+	vertical-align middle
+.page-title-close
+	display inline-block
+	margin 0 5px
+	vertical-align middle
+	&:hover
+		color #FFA200
+.page-address-bar-wrapper
+	height title-height
+	background-color #FFFFFF
+	overflow hidden
+	&:after
+		acf()
+.page-address-bar-input
+	float left
+	display block
+	width 'calc(100% - %s)' % (title-height + 10px)
+	height title-height - 8px
+	margin 4px 0 4px 10px
+	padding 0 (title-height / 2)
+	outline none
+	border none
+	border-radius title-height
+	font-size 16px
+	color #717171
+	box-sizing border-box
+	background-color #F1F3F4
+	baseTransition()
+	&:focus
+		color #424242
+		box-shadow 0 0 4px 0 #BFBFBF inset
+		background-color #FFFFFF
+.page-address-bar-close-button
+	float left
+	width (title-height / 4 * 3)
+	height (title-height / 4 * 3)
+	margin (title-height / 8)
+	border-radius title-height
+	text-align center
+	cursor pointer
+	baseTransition()
+	i
+		line-height (title-height / 4 * 3)
+		font-size 18px
+		color #999999
+	&:hover
+		color #424242
+		background-color #EAEBEB
+.page-view-container
+	// none
+.page-view-wrapper
+	position relative
+	min-height inherit
+iframe.page-view-iframe
+	display none
+	width 100%
+	min-height inherit
+	border 0
+	box-sizing border-box
+	&.page-view-iframe-focus
+		display block
+	&.page-view-iframe-sandbox-mode
+		border 2px solid color-safe
+	&.page-view-iframe-view-source-mode
+		border 2px solid color-theme
+	&.page-view-iframe-edit-source-mode
+		border 2px solid color-dangerous
+.page-contextmenu-wrapper
+	position fixed
+	left 50%
+	top 50%
+	background-color #FAFAFA
+	box-shadow 0 0 5px 0 #999999
+	animation slideIn 0.3s linear
+	overflow hidden
+	z-index 1
+	user-select none
+.page-contextmenu-group
+	padding-top 8px
+	&:last-child
+		padding-bottom 8px
+	&.dev
+		.page-contextmenu-title
+			background-color color-theme
+			color #FFFFFF
+.page-contextmenu-title
+	padding 0 20px 0 34px
+	margin-bottom 8px
+	height 30px
+	line-height 30px
+	font-size 12px
+	font-weight 600
+	background-color #F4F5F6
+	color #666666
+.page-contextmenu-cutline
+	margin-top 8px
+	border-top 1px solid #CCCCCC
+.page-contextmenu-menu
+	position relative
+	min-width 120px
+	height 30px
+	line-height 30px
+	cursor pointer
+	box-sizing border-box
+	color #666666
+	baseTransition()
+	&:hover
+		background-color #EEEEEE
+		color #424242
+		color color-theme
+		.page-contextmenu-menu-icon
+			transform scale(1.2, 1.2)
+	&.page-contextmenu-menu-dangerous
+		color color-dangerous
+		&:hover
+			background-color color-dangerous
+			color #FFFFFF
+	&.page-contextmenu-menu-disabled, &.page-contextmenu-menu-disabled:hover
+		background-color transparent
+		cursor auto
+		color #CCCCCC
+.page-contextmenu-menu-icon
+	position absolute
+	top 0
+	left 0
+	width 20px
+	height 20px
+	margin 5px 7px
+	img
+		display block
+		width 100%
+		height 100%
+		border none
+	i
+		display block
+		width 100%
+		height 100%
+		line-height 20px
+		font-size 18px
+		text-align center
+.page-contextmenu-menu-name
+	padding 0 20px 0 34px
+	font-size 14px
+	white-space nowrap
+.page-contextmenu-menu-marker
+	position absolute
+	top 0
+	left 0
+	right 0
+	bottom 0
+@keyframes slideIn
+	from
+		max-height 0
+	to
+		max-height 600px

@@ -1,0 +1,13 @@
+// after清除浮动
+baseAcf()
+	&:after
+		display block
+		content ''
+		clear both
+		zoom 1
+// 过渡效果
+baseTransition()
+	if (arguments)
+		transition all arguments linear
+	else
+		transition all 0.3s linear

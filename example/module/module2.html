@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>相同链接，不同参数</title>
+        <script>
+            window.init = function(page, globalPayload) {
+                window.page = page
+
+                setTitle()
+                showUrl()
+                showSourcePageId()
+
+                function setTitle() {
+                    document.title = Math.random().toString()
+                }
+
+                function showUrl() {
+                    var el_url = document.querySelector('#url')
+                    el_url.innerText = '当前子页面url：' + window.location.href
+                }
+
+                function showSourcePageId() {
+                    var sourcePageId = page.sourcePageId
+                    var el_source = document.querySelector('#source')
+                    el_source.innerText = '当前子页面sourcePageId：' + sourcePageId
+                }
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>相同链接，不同参数</h1>
+        <h2>动态替换当前页面title</h2>
+        <div id="url"></div>
+        <hr />
+        <h2>显示页面来源（sourcePageId）</h2>
+        <div id="source"></div>
+    </body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>
+            <%= htmlWebpackPlugin.options.title %>
+        </title>
+        <link rel="stylesheet" href="//at.alicdn.com/t/font_644532_ztolsjmal1q.css" />
+
+        <style>
+            html {
+                font-size: 20px;
+            }
+
+            body {
+                padding: 0;
+                margin: 0;
+                font-size: 14px;
+            }
+
+            .left {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 10rem;
+                box-shadow: 0 0 0.25rem 0 rgba(47, 48, 47, 0.39);
+                /* z-index: 1; */
+            }
+
+            .left .link {
+                padding: 20px 0;
+                text-align: center;
+                border-top: 1px solid #eeeeee;
+            }
+
+            .right {
+                margin: 2rem 0 0 10rem;
+            }
+
+            .right .page-title-ctn {
+                position: fixed;
+                top: 0rem;
+                left: 10rem;
+                right: 0;
+                height: 2rem;
+                box-sizing: border-box;
+                /*padding-bottom: 2rem;*/
+            }
+
+            .right .page-iframe-ctn {
+                min-height: calc(100vh - 2rem);
+            }
+
+            .native-iframe {
+                position: fixed;
+                width: 50%;
+                height: 50%;
+                bottom: 0;
+                right: 0;
+                background: #ffffff;
+            }
+
+            .dialog-marker {
+                display: none;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background: rgba(0, 0, 0, 0.3);
+                z-index: 99;
+            }
+
+            .dialog {
+                display: none;
+                position: fixed;
+                width: 50%;
+                height: 50%;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                margin: auto;
+                background: #ffffff;
+                border-radius: 2px;
+                box-shadow: 1px 1px 50px 0 rgba(0, 0, 0, 0.3);
+                z-index: 100;
+            }
+
+            .dialog-header {
+                height: 40px;
+            }
+
+            .dialog-body {
+                height: calc(100% - 40px);
+                overflow-y: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="left">
+            <a href="javascript:void(0);" onclick="openModule1()">
+                <div class="link">基本方法</div>
+            </a>
+            <a href="javascript:void(0);" onclick="openWithDifferentQuery()">
+                <div class="link">相同链接，不同参数</div>
+            </a>
+            <a href="javascript:void(0);" page-href="http://stranger.ren" page-close-enable="false">
+                <div class="link">Stranger·过客 无法关闭</div>
+            </a>
+            <a href="javascript:void(0);" onclick="openPageRepestEnable()">
+                <div class="link">Stranger·过客 无重复限制</div>
+            </a>
+            <a href="javascript:void(0);" onclick="openPageWithSpecialContextMenu()">
+                <div class="link">Stranger·过客 定制化右键菜单</div>
+            </a>
+            <a href="javascript:void(0);" onclick="clearCache()">
+                <div class="link">清除本地缓存</div>
+            </a>
+            <a href="javascript:void(0);" onclick="closeAllPage()">
+                <div class="link">关闭所有页面</div>
+            </a>
+            <a href="javascript:void(0);" onclick="postMessageToHome()">
+                <div class="link">向首页发送消息</div>
+            </a>
+            <a href="javascript:void(0);" onclick="openByNative()">
+                <div class="link">原生iframe打开</div>
+            </a>
+            <a href="javascript:void(0);" onclick="openByCustomContainer()">
+                <div class="link">自定义打开容器</div>
+            </a>
+        </div>
+        <div class="right">
+            <div id="pageTitleCtn" class="page-title-ctn">
+                <!--<div class="page-title">
+					<span class="page-title-content">Module1</span>
+					<span class="page-title-close">x</span>
+				</div>
+				<div class="page-title">
+					<span class="page-title-content">Module2</span>
+					<span class="page-title-close">x</span>
+				</div>-->
+            </div>
+            <div id="pageIframeCtn" class="page-iframe-ctn">
+                <!--<div class="page-iframe-wrapper">
+					<iframe class="" src="" width="" height=""></iframe>
+				</div>-->
+            </div>
+        </div>
+        <div class="dialog-marker" id="dialogMarker"></div>
+        <div class="dialog" id="dialog">
+            <div class="dialog-header" id="customTitleCtn"></div>
+            <div class="dialog-body" id="customViewCtn"></div>
+        </div>
+        <script type="text/javascript">
+            ;(function() {
+                // 实例化page框架
+                window.page = new Page({
+                    devMode: true,
+                    // titleContainer: '#pageTitleCtn',
+                    limit: 100,
+                    // cacheEnable: true,
+                    onLoad: function(pageId) {
+                        console.log('onLoad: ', pageId)
+                    },
+                    onClose: function(pageId, nextPageId) {
+                        console.log('onClose: ', pageId, nextPageId)
+                    },
+                    // cacheEnable: true,
+                    onLimit: function(limit) {
+                        console.log('onLimit: ', limit)
+                    },
+                    onMessage: function(message) {
+                        console.log('onMessage: ', message)
+                    },
+                    globalRoute: {
+                        titleIcon: function() {
+                            var el = document.createElement('i')
+                            el.className = 'iconfont icon-menu1'
+                            return el
+                        },
+                        titleCloseButton: function() {
+                            var el = document.createElement('i')
+                            el.className = 'iconfont icon-logout1'
+                            return el
+                        },
+                        // titleCloseButton: function() {
+                        //     var el = document.createElement('img')
+                        //     el.src = 'https://cn.vuejs.org/images/logo.png'
+                        //     el.style.width = '20px'
+                        //     el.style.height = '20px'
+                        //     return el
+                        // },
+                        closeEnable: true,
+                        repeatEnable: false,
+                        // repeatRule: 'origin_pathname_search',
+                        // repeatRule: function() {
+                        //     return JSON
+                        // },
+                        contextmenuEnable: true,
+                        autoSyncHeight: true,
+                        // 全局右键菜单列表,name是菜单文字，icon是菜单图标，action是执行的方法，第一个参数是当前页面的id，第二个参数是page的实例化对象,第三个对象是当前页面路由元route信息
+                        contextmenuGroups: [
+                            {
+                                // title: '通用菜单',
+                                menus: [
+                                    {
+                                        name: '刷新',
+                                        icon: '',
+                                        action: function(pageId, page, route) {
+                                            page.refresh(pageId)
+                                        }
+                                    },
+                                    {
+                                        name: '重新加载',
+                                        icon: '',
+                                        action: function(pageId, page, route) {
+                                            page.reload(pageId)
+                                        }
+                                    },
+                                    {
+                                        name: '关闭',
+                                        icon: '',
+                                        action: function(pageId, page, route) {
+                                            page.close(pageId)
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                menus: [
+                                    {
+                                        name: '关闭全部',
+                                        icon: '',
+                                        action: function(pageId, page, route) {
+                                            page.closeAll()
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                        // sandboxMode: true,
+                    },
+                    globalData: {
+                        test: '1'
+                    }
+                })
+
+                window.homePageId = null
+                // 自动加载缓存，若无缓存，则打开默认页面
+                if (!page.recoverCache()) {
+                    homePageId = openHomepage()
+                }
+            })()
+
+            function openHomepage() {
+                return page.open({
+                    url: 'module/home.html',
+                    titleIcon: function() {
+                        var el = document.createElement('i')
+                        el.className = 'iconfont icon-test'
+                        return el
+                    },
+                    contextmenuGroups: [],
+                    autoSyncHeight: false,
+                    closeEnable: false,
+                    onLoad: function(pageId) {
+                        // console.log('pageOnLoad', pageId)
+                    },
+                    onClose: function(pageId, nextPageId) {
+                        // console.log(pageId, nextPageId)
+                    }
+                })
+            }
+
+            function openModule1() {
+                page.open({
+                    url: 'module/module1.html',
+                    data: {
+                        homePageId: homePageId
+                    },
+                    onLoad: function(pageId) {
+                        console.log('module1 onLoad', pageId)
+                    },
+                    onClose: function(pageId, nextPageId) {
+                        console.log('module1 onClose', pageId, nextPageId)
+                    }
+                })
+            }
+
+            function openWithDifferentQuery() {
+                page.open({
+                    url: 'module/module2.html?time=' + Date.now()
+                })
+            }
+
+            function openPageRepestEnable() {
+                page.open({
+                    url: 'http://stranger.ren',
+                    title: 'Stranger·过客',
+                    repeatEnable: true
+                })
+            }
+
+            function openPageWithSpecialContextMenu() {
+                page.open({
+                    url: 'http://stranger.ren',
+                    title: 'Stranger·过客',
+                    contextmenuGroups: [
+                        {
+                            title: '',
+                            menus: [
+                                {
+                                    name: '打开音乐首页',
+                                    icon: '',
+                                    action: function() {
+                                        page.open({
+                                            url: 'https://stranger.ren/#/music/zone',
+                                            title: '乐·空间',
+                                            repeatRule: 'all'
+                                        })
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                })
+            }
+
+            function clearCache() {
+                page.clearCache()
+            }
+
+            function closeAllPage() {
+                page.closeAll()
+            }
+
+            function openByNative() {
+                var el_iframe = document.createElement('iframe')
+                el_iframe.className = 'native-iframe'
+                el_iframe.src = 'module/module1.html'
+                document.body.appendChild(el_iframe)
+            }
+
+            function postMessageToHome() {
+                page.postMessage('来自父页面的消息', homePageId)
+            }
+
+            function openByCustomContainer() {
+                var titleContainer = document.querySelector('#customTitleCtn')
+                var viewContainer = document.querySelector('#customViewCtn')
+                document.querySelector('#dialogMarker').style.display = 'block'
+                document.querySelector('#dialog').style.display = 'block'
+
+                page.open({
+                    url: 'module/module1.html',
+                    title: '弹框',
+                    data: {
+                        homePageId: homePageId
+                    },
+                    autoSyncHeight: false,
+                    repeatEnable: true,
+                    customMode: true,
+                    titleWrapper: titleContainer,
+                    titleCreator: function(title, close, focus, contextmenu) {
+                        var el = document.createElement('div'),
+                            el_title = document.createElement('span'),
+                            el_close = document.createElement('span')
+                        el_title.innerHTML = title
+                        el_close.innerHTML = 'x'
+                        el_close.style.float = 'right'
+                        el_close.addEventListener('click', function() {
+                            document.querySelector('#dialogMarker').style.display = 'none'
+                            document.querySelector('#dialog').style.display = 'none'
+                            close()
+                        })
+                        el.appendChild(el_title)
+                        el.appendChild(el_close)
+                        // el.addEventListener('contextmenu', contextmenu)
+                        return el
+                    },
+                    viewWrapper: viewContainer,
+                    autoFocus: false
+                })
+            }
+        </script>
+    </body>
+</html>

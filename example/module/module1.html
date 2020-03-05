@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>基本方法</title>
+    </head>
+
+    <body>
+        <h1>基本方法</h1>
+        <h3>刷新</h3>
+        <button type="button" onclick="refresh()">刷新</button>
+        <h3>重新加载</h3>
+        <button type="button" onclick="reload()">重新加载</button>
+        <h3>重定向</h3>
+        <button type="button" onclick="redirect()">重定向</button>
+        <h3>关闭页面</h3>
+        <button type="button" onclick="closePage()">关闭页面</button>
+        <h3>打开新标签页</h3>
+        <button type="button" onclick="openNew()">打开新标签页</button>
+        <h3>高度同步</h3>
+        <button type="button" onclick="setHeight()">设置高度</button>
+        <button type="button" onclick="syncHeight()">同步高度</button>
+        <h3>通信</h3>
+        <input type="text" id="msgValue" />
+        <button type="button" onclick="sendMsg()">发送消息给parent</button>
+        <p>请打开控制台查看</p>
+        <br />
+        <input type="text" id="msgValue1" />
+        <button type="button" onclick="sendMsg1()">发送消息给第一个页面</button>
+        <p>在第一个页面查看接收的消息</p>
+        <script>
+            window.init = function(page, globalPayload) {
+                window.page = page
+                var pagePayload = page.pageData
+
+                window.refresh = function() {
+                    page.refresh()
+                }
+
+                window.reload = function() {
+                    page.reload()
+                }
+
+                window.redirect = function() {
+                    page.redirect('http://baidu.com')
+                }
+
+                window.closePage = function() {
+                    page.close()
+                }
+
+                window.openNew = function() {
+                    page.open('http://www.baidu.com')
+                }
+
+                window.redirect = function() {
+                    page.redirect('http://www.baidu.com')
+                }
+
+                window.setHeight = function() {
+                    document.body.style.height = parseInt(window.getComputedStyle(document.documentElement)['height']) + 1000 + 'px'
+                }
+
+                window.syncHeight = function() {
+                    page.syncHeight()
+                }
+
+                window.sendMsg = function() {
+                    var val = document.querySelector('#msgValue').value
+                    page.postMessage(val)
+                }
+                window.sendMsg1 = function() {
+                    var val = document.querySelector('#msgValue1').value
+                    page.postMessage(val, pagePayload.homePageId)
+                }
+            }
+        </script>
+    </body>
+</html>
