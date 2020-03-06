@@ -13,9 +13,10 @@ const rules = {
     },
     // 标题
     title: {
-        default: '',
+        default: true,
         type: [String, Boolean],
-        desc: '页面标题，默认为url，当页面加载后，会自动抓取子页面的title标签内文本'
+        desc:
+            '页面标题，当不设置该值时，默认为url，此时如果autoFetchTitle为true，标签页加载后会自动抓取子页面的title标签内文本（需同源）；参数当值为String类型时，使用设置的值，不会去自动获取标签页title；当值为false时，不会渲染标题文字。'
     },
     // 加载完成回调
     onLoad: {

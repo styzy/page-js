@@ -49,8 +49,11 @@ class Title extends SuperView {
             }
 
             // 标题内容渲染
-            if (this.route.title !== false) {
-                let title = this.route.title || this.route.url
+            let title = this.route.title
+            if (title === true) {
+                title = this.route.url
+            }
+            if (title !== false) {
                 if (title instanceof Function) {
                     title = title(this.route)
                 }

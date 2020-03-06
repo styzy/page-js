@@ -76,7 +76,7 @@ class Page extends Sky.Root {
         let view = new View(this.route, this.id)
         view.parentElement = this.route.viewWrapper || this.core.el_viewWrapper
         view.on('load', (event, title) => {
-            if (this.route.autoFetchTitle && title) {
+            if (typeof this.route.title !== 'string' && this.route.autoFetchTitle && title) {
                 this.title.setTitle(title)
             }
             if (this.route.onLoad instanceof Function) {
