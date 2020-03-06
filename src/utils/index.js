@@ -45,6 +45,10 @@ export function isCrossOrigin(iframe) {
 
 export { isHTMLElement }
 
+export function isObject(obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]'
+}
+
 export function px2number(str) {
     let number = parseFloat(str)
     return isNaN(number) ? 0 : number
@@ -87,6 +91,7 @@ export default {
     createURL,
     isCrossOrigin,
     isHTMLElement,
+    isObject,
     px2number,
     replaceAll,
     stopDefaultEvent,

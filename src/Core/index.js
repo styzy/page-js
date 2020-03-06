@@ -270,6 +270,7 @@ class Core {
         }
         let page = new Page({ id: this.#createPageId(), core: this, route, sourcePageId })
         this.#pages[page.id] = page
+        console.log('route: ', route)
         this.#setPagePayloadById(page.id, route.data)
         this.#saveCache()
         return page

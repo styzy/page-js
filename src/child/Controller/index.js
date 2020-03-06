@@ -1,4 +1,5 @@
 import CONSTANTS from '../../CONSTANTS'
+import { isObject } from '../../utils'
 
 class Controller {
     #payloadStorage
@@ -23,7 +24,7 @@ class Controller {
     get pageData() {
         if (!this.isPageChild) return
 
-        if (typeof this.#pagePayload === 'object') {
+        if (isObject(this.#pagePayload)) {
             return Object.assign({}, this.#pagePayload)
         }
         return this.#pagePayload
@@ -31,7 +32,7 @@ class Controller {
     get globalData() {
         if (!this.isPageChild) return
 
-        if (typeof this.#globalPayload === 'object') {
+        if (isObject(this.#globalPayload)) {
             return Object.assign({}, this.#globalPayload)
         }
         return this.#globalPayload

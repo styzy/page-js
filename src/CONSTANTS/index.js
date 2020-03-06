@@ -1,7 +1,7 @@
 const NAME_SPACE = `page`
 const CONSTANTS = {
     // 版本号
-    VERSION: `1.3.0`,
+    VERSION: `1.3.1`,
     // 选择器
     SELECTOR: {
         // 路由元素
