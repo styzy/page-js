@@ -1,7 +1,7 @@
 const NAME_SPACE = `page`
 const CONSTANTS = {
     // 版本号
-    VERSION: `1.3.2`,
+    VERSION: `1.3.3`,
     // 选择器
     SELECTOR: {
         // 路由元素
@@ -122,7 +122,9 @@ const CONSTANTS = {
     // 子页面初始化方法名称，请勿修改
     CHILD_INIT_CALLBACK_NAME: `init`,
     // 页面间通信标识
-    POST_MESSAGE_TYPE: `${NAME_SPACE}-message`
+    POST_MESSAGE_TYPE: `${NAME_SPACE}-message`,
+    //
+    FRAMEWORK_SUPPROT_FLAG: `__${NAME_SPACE.toUpperCase()}__SUPPORT__`
 }
 
 export default CONSTANTS

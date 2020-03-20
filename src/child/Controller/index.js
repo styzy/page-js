@@ -2,15 +2,25 @@ import CONSTANTS from '../../CONSTANTS'
 import { isObject } from '../../utils'
 
 class Controller {
+    #isChild = window.self !== window.top
+    #isInPageFrameWork = !!window.top[CONSTANTS.FRAMEWORK_SUPPROT_FLAG]
+    #isPageChild = this.isInPageFrameWork ? window.name.includes(CONSTANTS.PAGE_ID_PREFIX) : false
+    #pageId = this.isPageChild ? window.name : ''
     #payloadStorage
     #parentCore
     #parentController
     #globalPayload
     #pagePayload
     #messageReceiver = null
-    #pageId = window.name
-    isChild = window.self !== window.top
-    isPageChild = window.name.includes(CONSTANTS.PAGE_ID_PREFIX)
+    get isChild() {
+        return this.#isChild
+    }
+    get isInPageFrameWork() {
+        return this.#isInPageFrameWork
+    }
+    get isPageChild() {
+        return this.#isPageChild
+    }
     get pageId() {
         if (this.isPageChild) {
             return this.#pageId
@@ -30,7 +40,7 @@ class Controller {
         return this.#pagePayload
     }
     get globalData() {
-        if (!this.isPageChild) return
+        if (!this.isInPageFrameWork) return
 
         if (isObject(this.#globalPayload)) {
             return Object.assign({}, this.#globalPayload)
@@ -38,12 +48,16 @@ class Controller {
         return this.#globalPayload
     }
     constructor() {
-        if (this.isPageChild) {
-            this.#payloadStorage = window.top[CONSTANTS.PAYLOAD_STORAGE_NAME]
-            this.#parentCore = this.#payloadStorage[CONSTANTS.PAYLOAD_CORE_NAME]
-            this.#parentController = this.#parentCore.controller
-            this.#globalPayload = this.#payloadStorage[CONSTANTS.PAYLOAD_GLOBAL_NAME]
-            this.#pagePayload = this.#payloadStorage[this.#pageId]
+        if (this.isChild) {
+            if (this.isInPageFrameWork) {
+                this.#payloadStorage = window.top[CONSTANTS.PAYLOAD_STORAGE_NAME]
+                this.#parentCore = this.#payloadStorage[CONSTANTS.PAYLOAD_CORE_NAME]
+                this.#parentController = this.#parentCore.controller
+                this.#globalPayload = this.#payloadStorage[CONSTANTS.PAYLOAD_GLOBAL_NAME]
+                if (this.isPageChild) {
+                    this.#pagePayload = this.#payloadStorage[this.#pageId]
+                }
+            }
         }
         this.#bindLoadHandler()
         this.#bindMessageHandler()

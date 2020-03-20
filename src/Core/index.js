@@ -54,6 +54,7 @@ class Core {
         this.#observeState(this.state)
         this.#setMessageReceiver()
         this.#initPayloadStorage()
+        this.#setFrameworkSupportFlag()
         this.#handleDevMode()
     }
     #createTitleContainer() {
@@ -197,6 +198,12 @@ class Core {
         this.#payloadStorage[CONSTANTS.PAYLOAD_CORE_NAME] = this
         this.#payloadStorage[CONSTANTS.PAYLOAD_GLOBAL_NAME] = this.config.globalData
         window[CONSTANTS.PAYLOAD_STORAGE_NAME] = this.#payloadStorage
+    }
+    /**
+     * 设置框架支持标识
+     */
+    #setFrameworkSupportFlag() {
+        window[CONSTANTS.FRAMEWORK_SUPPROT_FLAG] = true
     }
     /**
      * 处理开发商模式
