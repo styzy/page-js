@@ -150,7 +150,7 @@ class Controller {
      */
     closeAll(isForce = false) {
         try {
-            this.#core.pageIdList.reverse().forEach(pageId => {
+            this.#core.pageIdList.reverse().forEach((pageId) => {
                 this.close(pageId)
             })
         } catch (error) {
@@ -211,7 +211,7 @@ class Controller {
         try {
             let cacheRoutes = this.#core.loadCache()
             if (cacheRoutes) {
-                cacheRoutes.forEach(route => {
+                cacheRoutes.forEach((route) => {
                     this.open(route)
                 })
                 return true
@@ -241,11 +241,51 @@ class Controller {
             this.#exceptionHandler(`更新配置`, error)
         }
     }
+    /**
+     * 检查是否达到上限
+     */
     checkLimit() {
         try {
             return this.#core.checkLimit()
         } catch (error) {
             this.#exceptionHandler(`检查是否达到上限`, error)
+        }
+    }
+    /**
+     * 获取传递数据
+     * @param {String} pageId
+     */
+    getData(pageId = '') {
+        try {
+            if (pageId) {
+                return this.#core.getPagePayloadById(pageId)
+            } else {
+                return this.#core.getGlobalPayload()
+            }
+        } catch (error) {
+            this.#exceptionHandler(`获取传递数据`, error)
+        }
+    }
+    /**
+     * 更新传递数据
+     * @param {Function} update
+     * @param {String} pageId
+     */
+    updateData(update, pageId = '') {
+        try {
+            if (update instanceof Function) {
+                if (pageId) {
+                    let newPayload = update(this.#core.getPagePayloadById(pageId))
+                    this.#core.updatePagePayloadById(pageId, newPayload)
+                } else {
+                    let newPayload = update(this.#core.getGlobalPayload())
+                    this.#core.updateGlobalPayload(newPayload)
+                }
+            } else {
+                throw new Error(`第一个参数必须为方法`)
+            }
+        } catch (error) {
+            this.#exceptionHandler(`更新传递数据`, error)
         }
     }
 }

@@ -2,7 +2,7 @@ import CONSTANTS from '../CONSTANTS'
 import Config from './Config'
 import TitleContainer from './TitleContainer'
 import Page from './Page'
-import { replaceAll, isHTMLElement, px2number } from '../utils'
+import { replaceAll, isHTMLElement, px2number, smartClone } from '../utils'
 import Route from './Route'
 
 class Core {
@@ -60,7 +60,7 @@ class Core {
     #createTitleContainer() {
         let titleContainer = new TitleContainer(this)
         titleContainer.on('mouseWheel', (event, isUp) => {
-            this.pageList.forEach(page => {
+            this.pageList.forEach((page) => {
                 page.destroyContextmenu()
             })
         })
@@ -93,8 +93,8 @@ class Core {
     #initRouteElement() {
         let el_routes = document.querySelectorAll(CONSTANTS.SELECTOR.ROUTE_ELEMENT),
             self = this
-        el_routes.forEach(el => {
-            el.addEventListener('click', function() {
+        el_routes.forEach((el) => {
+            el.addEventListener('click', function () {
                 let options = {
                     url: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_URL)),
                     title: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_TITLE)),
@@ -143,7 +143,7 @@ class Core {
             currentPageId: {
                 enumerable: true,
                 configurable: false,
-                set: targetPageId => {
+                set: (targetPageId) => {
                     if (currentPageId === targetPageId) {
                         return
                     }
@@ -166,7 +166,7 @@ class Core {
      * 设置消息接收器
      */
     #setMessageReceiver() {
-        window.addEventListener('message', nativeMessage => {
+        window.addEventListener('message', (nativeMessage) => {
             let message = nativeMessage.data
             if (message && typeof message === 'string') {
                 try {
@@ -234,7 +234,7 @@ class Core {
         if (!this.config.cacheEnable) {
             return
         }
-        let routes = this.pageList.map(page => {
+        let routes = this.pageList.map((page) => {
             return {
                 route: page.route,
                 url: page.route.url
@@ -250,7 +250,7 @@ class Core {
         this.config.update(customConfig)
     }
     createRoute(options) {
-        if (['string', 'object'].every(type => type !== typeof options)) {
+        if (['string', 'object'].every((type) => type !== typeof options)) {
             throw new Error(`参数类型错误，必须为 String 或 Object`)
         }
         if (typeof options === 'string') {
@@ -314,7 +314,7 @@ class Core {
      * @param {String} pageId
      */
     getNextAutoFocusPageById(pageId) {
-        let autoFocusPageList = this.pageList.filter(page => page.route.autoFocus)
+        let autoFocusPageList = this.pageList.filter((page) => page.route.autoFocus)
         for (let index = 0, length = autoFocusPageList.length; index < length; index++) {
             const page = autoFocusPageList[index]
             if (page.id === pageId) {
@@ -338,7 +338,7 @@ class Core {
             return false
         }
         let routes = JSON.parse(routesString)
-        routes = routes.map(item => {
+        routes = routes.map((item) => {
             item.route.url = item.url
             return item.route
         })
@@ -360,14 +360,48 @@ class Core {
      * 计算所有标题长度
      */
     getAllTitleWidth() {
-        let titleList = this.pageList.map(page => page.title).filter(title => title.rendered && title.parentElement === this.titleContainer.wrapperElement),
+        let titleList = this.pageList.map((page) => page.title).filter((title) => title.rendered && title.parentElement === this.titleContainer.wrapperElement),
             totalWidth = 0
 
-        titleList.forEach(title => {
+        titleList.forEach((title) => {
             totalWidth += title.getComputedWidth()
         })
 
         return totalWidth
+    }
+    /**
+     * 获取全局的传递数据
+     */
+    getGlobalPayload() {
+        return smartClone(this.#payloadStorage[CONSTANTS.PAYLOAD_GLOBAL_NAME])
+    }
+    /**
+     * 修改全局的传递数据
+     * @param {Any} payload
+     */
+    updateGlobalPayload(payload) {
+        this.#payloadStorage[CONSTANTS.PAYLOAD_GLOBAL_NAME] = payload
+    }
+    /**
+     * 获取标签页的传递数据
+     * @param {String} pageId
+     */
+    getPagePayloadById(pageId) {
+        if (!this.#payloadStorage.hasOwnProperty(pageId)) {
+            throw new Error(`错误的pageId`)
+        }
+        return smartClone(this.#payloadStorage[pageId])
+    }
+    /**
+     * 修改标签页的传递数据
+     * @param {String} pageId
+     * @param {Any} payload
+     */
+    updatePagePayloadById(pageId, payload) {
+        if (!this.#payloadStorage.hasOwnProperty(pageId)) {
+            throw new Error(`错误的pageId`)
+        }
+        this.#payloadStorage[pageId] = payload
     }
 }
 

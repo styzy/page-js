@@ -65,6 +65,14 @@ export function replaceAll(str, targetStr, replaceStr) {
     return str.replace(new RegExp(targetStr, 'gm'), replaceStr)
 }
 
+export function smartClone(data) {
+    if (data instanceof Object) {
+        return Object.assign(data.constructor(), data)
+    } else {
+        return data
+    }
+}
+
 export function stopDefaultEvent(event) {
     event = event || window.event
     if (!event) {
@@ -94,6 +102,7 @@ export default {
     isObject,
     px2number,
     replaceAll,
+    smartClone,
     stopDefaultEvent,
     sync
 }
