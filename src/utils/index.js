@@ -66,7 +66,7 @@ export function replaceAll(str, targetStr, replaceStr) {
 }
 
 export function smartClone(data) {
-    if (data instanceof Object) {
+    if (data instanceof Object && !(data instanceof Function)) {
         return Object.assign(data.constructor(), data)
     } else {
         return data
