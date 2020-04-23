@@ -29,47 +29,47 @@
         <button type="button" onclick="sendMsg1()">发送消息给第一个页面</button>
         <p>在第一个页面查看接收的消息</p>
         <script>
-            window.init = function(page, globalPayload) {
+            window.init = function (page, globalPayload) {
                 window.page = page
                 var pagePayload = page.pageData
 
-                window.refresh = function() {
+                window.refresh = function () {
                     page.refresh()
                 }
 
-                window.reload = function() {
+                window.reload = function () {
                     page.reload()
                 }
 
-                window.redirect = function() {
+                window.redirect = function () {
                     page.redirect('http://baidu.com')
                 }
 
-                window.closePage = function() {
+                window.closePage = function () {
                     page.close()
                 }
 
-                window.openNew = function() {
+                window.openNew = function () {
                     page.open('http://www.baidu.com')
                 }
 
-                window.redirect = function() {
+                window.redirect = function () {
                     page.redirect('http://www.baidu.com')
                 }
 
-                window.setHeight = function() {
+                window.setHeight = function () {
                     document.body.style.height = parseInt(window.getComputedStyle(document.documentElement)['height']) + 1000 + 'px'
                 }
 
-                window.syncHeight = function() {
+                window.syncHeight = function () {
                     page.syncHeight()
                 }
 
-                window.sendMsg = function() {
+                window.sendMsg = function () {
                     var val = document.querySelector('#msgValue').value
                     page.postMessage(val)
                 }
-                window.sendMsg1 = function() {
+                window.sendMsg1 = function () {
                     var val = document.querySelector('#msgValue1').value
                     page.postMessage(val, pagePayload.homePageId)
                 }

@@ -42,6 +42,7 @@ class Controller {
                 // url不完全一致时，重载重复页面
                 if (!route.equalsUrl(repeatPage.route)) {
                     repeatPage.route.url = route.url
+                    this.#core.updatePagePayloadById(repeatPage.id, route.data)
                     this.reload(repeatPage.id)
                 }
                 repeatPage.route.autoFocus && this.focus(repeatPage.id)

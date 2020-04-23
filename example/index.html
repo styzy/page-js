@@ -157,33 +157,33 @@
             <div class="dialog-body" id="customViewCtn"></div>
         </div>
         <script type="text/javascript">
-            ;(function() {
+            ;(function () {
                 // 实例化page框架
                 window.page = new Page({
                     devMode: true,
                     // titleContainer: '#pageTitleCtn',
                     limit: 100,
                     // cacheEnable: true,
-                    onLoad: function(pageId) {
+                    onLoad: function (pageId) {
                         console.log('onLoad: ', pageId)
                     },
-                    onClose: function(pageId, nextPageId) {
+                    onClose: function (pageId, nextPageId) {
                         console.log('onClose: ', pageId, nextPageId)
                     },
                     // cacheEnable: true,
-                    onLimit: function(limit) {
+                    onLimit: function (limit) {
                         console.log('onLimit: ', limit)
                     },
-                    onMessage: function(message) {
+                    onMessage: function (message) {
                         console.log('onMessage: ', message)
                     },
                     globalRoute: {
-                        titleIcon: function() {
+                        titleIcon: function () {
                             var el = document.createElement('i')
                             el.className = 'iconfont icon-menu1'
                             return el
                         },
-                        titleCloseButton: function() {
+                        titleCloseButton: function () {
                             var el = document.createElement('i')
                             el.className = 'iconfont icon-logout1'
                             return el
@@ -211,21 +211,21 @@
                                     {
                                         name: '刷新',
                                         icon: '',
-                                        action: function(pageId, page, route) {
+                                        action: function (pageId, page, route) {
                                             page.refresh(pageId)
                                         }
                                     },
                                     {
                                         name: '重新加载',
                                         icon: '',
-                                        action: function(pageId, page, route) {
+                                        action: function (pageId, page, route) {
                                             page.reload(pageId)
                                         }
                                     },
                                     {
                                         name: '关闭',
                                         icon: '',
-                                        action: function(pageId, page, route) {
+                                        action: function (pageId, page, route) {
                                             page.close(pageId)
                                         }
                                     }
@@ -236,7 +236,7 @@
                                     {
                                         name: '关闭全部',
                                         icon: '',
-                                        action: function(pageId, page, route) {
+                                        action: function (pageId, page, route) {
                                             page.closeAll()
                                         }
                                     }
@@ -260,7 +260,7 @@
             function openHomepage() {
                 return page.open({
                     url: 'module/home.html',
-                    titleIcon: function() {
+                    titleIcon: function () {
                         var el = document.createElement('i')
                         el.className = 'iconfont icon-test'
                         return el
@@ -268,10 +268,10 @@
                     contextmenuGroups: [],
                     autoSyncHeight: false,
                     closeEnable: false,
-                    onLoad: function(pageId) {
+                    onLoad: function (pageId) {
                         // console.log('pageOnLoad', pageId)
                     },
-                    onClose: function(pageId, nextPageId) {
+                    onClose: function (pageId, nextPageId) {
                         // console.log(pageId, nextPageId)
                     }
                 })
@@ -283,10 +283,10 @@
                     data: {
                         homePageId: homePageId
                     },
-                    onLoad: function(pageId) {
+                    onLoad: function (pageId) {
                         console.log('module1 onLoad', pageId)
                     },
-                    onClose: function(pageId, nextPageId) {
+                    onClose: function (pageId, nextPageId) {
                         console.log('module1 onClose', pageId, nextPageId)
                     }
                 })
@@ -294,7 +294,8 @@
 
             function openWithDifferentQuery() {
                 page.open({
-                    url: 'module/module2.html?time=' + Date.now()
+                    url: 'module/module2.html?time=' + Date.now(),
+                    data: Date.now()
                 })
             }
 
@@ -317,7 +318,7 @@
                                 {
                                     name: '打开音乐首页',
                                     icon: '',
-                                    action: function() {
+                                    action: function () {
                                         page.open({
                                             url: 'https://stranger.ren/#/music/zone',
                                             title: '乐·空间',
@@ -366,14 +367,14 @@
                     repeatEnable: true,
                     customMode: true,
                     titleWrapper: titleContainer,
-                    titleCreator: function(title, close, focus, contextmenu) {
+                    titleCreator: function (title, close, focus, contextmenu) {
                         var el = document.createElement('div'),
                             el_title = document.createElement('span'),
                             el_close = document.createElement('span')
                         el_title.innerHTML = title
                         el_close.innerHTML = 'x'
                         el_close.style.float = 'right'
-                        el_close.addEventListener('click', function() {
+                        el_close.addEventListener('click', function () {
                             document.querySelector('#dialogMarker').style.display = 'none'
                             document.querySelector('#dialog').style.display = 'none'
                             close()

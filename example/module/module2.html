@@ -4,9 +4,10 @@
         <meta charset="UTF-8" />
         <title>相同链接，不同参数</title>
         <script>
-            window.init = function(page, globalPayload) {
-                console.log('page: ', page)
+            window.init = function (page, globalPayload) {
                 window.page = page
+
+                document.querySelector('#payload').innerText = page.pageData
 
                 setTitle()
                 showUrl()
@@ -37,5 +38,6 @@
         <hr />
         <h2>显示页面来源（sourcePageId）</h2>
         <div id="source"></div>
+        <div>携带参数：<span id="payload"></span></div>
     </body>
 </html>
