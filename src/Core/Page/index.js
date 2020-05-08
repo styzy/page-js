@@ -52,9 +52,9 @@ class Page extends Sky.Root {
         title.on('click', () => {
             this.core.controller.focus(this.id)
         })
-        title.on('contextmenu', event => {
+        title.on('contextmenu', (event) => {
             // TODO 右键菜单逻辑
-            this.core.pageList.forEach(page => {
+            this.core.pageList.forEach((page) => {
                 page.destroyContextmenu()
             })
             if (!this.route.contextmenuEnable) {
@@ -79,7 +79,7 @@ class Page extends Sky.Root {
             if (typeof this.route.title !== 'string' && this.route.autoFetchTitle && title) {
                 this.title.setTitle(title)
             }
-            if (this.route.onLoad instanceof Function) {
+            if (typeof this.route.onLoad === 'function') {
                 this.route.onLoad(this.id)
             }
             if (this.core.config.onLoad instanceof Function) {
@@ -116,7 +116,7 @@ class Page extends Sky.Root {
                         },
                         action: () => {
                             this.core.titleContainer.addressBar.value = this.route.url
-                            this.core.titleContainer.showAddressBar(url => {
+                            this.core.titleContainer.showAddressBar((url) => {
                                 this.route.url = url
                                 this.core.titleContainer.addressBar.value = this.route.url
                                 this.reload()

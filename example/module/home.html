@@ -24,9 +24,9 @@
             }
         </style>
         <script>
-            window.init = function(page, globalPayload) {
+            window.init = function (page, globalPayload) {
                 window.page = page
-                page.setMessageReceiver(function(message) {
+                page.setMessageReceiver(function (message) {
                     var el_log_ctn = document.querySelector('#messageLogCtn')
                     var el_log = document.createElement('div')
                     var time = new Date()
@@ -43,7 +43,7 @@
                     }
                 })
 
-                window.openPage = function() {
+                window.openPage = function () {
                     page.open({
                         url: 'module/module2.html'
                     })
