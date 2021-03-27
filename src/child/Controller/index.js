@@ -1,5 +1,5 @@
 import CONSTANTS from '../../CONSTANTS'
-import { isObject } from '../../utils'
+import { deepClone } from '../../utils'
 
 class Controller {
     #isChild = window.self !== window.top
@@ -34,17 +34,11 @@ class Controller {
     get pageData() {
         if (!this.isPageChild) return
 
-        if (isObject(this.#pagePayload)) {
-            return Object.assign({}, this.#pagePayload)
-        }
         return this.#pagePayload
     }
     get globalData() {
         if (!this.isInPageFrameWork) return
 
-        if (isObject(this.#globalPayload)) {
-            return Object.assign({}, this.#globalPayload)
-        }
         return this.#globalPayload
     }
     constructor() {
@@ -53,9 +47,9 @@ class Controller {
                 this.#payloadStorage = window.top[CONSTANTS.PAYLOAD_STORAGE_NAME]
                 this.#parentCore = this.#payloadStorage[CONSTANTS.PAYLOAD_CORE_NAME]
                 this.#parentController = this.#parentCore.controller
-                this.#globalPayload = this.#payloadStorage[CONSTANTS.PAYLOAD_GLOBAL_NAME]
+                this.#globalPayload = deepClone(this.#payloadStorage[CONSTANTS.PAYLOAD_GLOBAL_NAME])
                 if (this.isPageChild) {
-                    this.#pagePayload = this.#payloadStorage[this.#pageId]
+                    this.#pagePayload = deepClone(this.#payloadStorage[this.#pageId])
                 }
             }
         }
@@ -73,7 +67,7 @@ class Controller {
     #bindMessageHandler() {
         if (!this.isPageChild) return
 
-        window.addEventListener('message', nativeMessage => {
+        window.addEventListener('message', (nativeMessage) => {
             let message = nativeMessage.data
             if (message && typeof message === 'string') {
                 try {

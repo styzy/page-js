@@ -1,4 +1,5 @@
 import sync, { isHTMLElement } from '@styzy/utils-configuration-sync'
+import deepClone from './deepClone'
 
 export function addMouseWheelListener(el, handler, options) {
     el.addEventListener('mousewheel', mouseWheelHandler, options)
@@ -28,6 +29,8 @@ export function createURL(url) {
         return a.href
     }
 }
+
+export { deepClone }
 
 /**
  * iframe是否跨域
@@ -65,14 +68,6 @@ export function replaceAll(str, targetStr, replaceStr) {
     return str.replace(new RegExp(targetStr, 'gm'), replaceStr)
 }
 
-export function smartClone(data) {
-    if (data instanceof Object && !(data instanceof Function)) {
-        return Object.assign(data.constructor(), data)
-    } else {
-        return data
-    }
-}
-
 export function stopDefaultEvent(event) {
     event = event || window.event
     if (!event) {
@@ -97,12 +92,12 @@ export { sync }
 export default {
     addMouseWheelListener,
     createURL,
+    deepClone,
     isCrossOrigin,
     isHTMLElement,
     isObject,
     px2number,
     replaceAll,
-    smartClone,
     stopDefaultEvent,
     sync
 }

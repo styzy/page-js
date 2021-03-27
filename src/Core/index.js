@@ -2,7 +2,7 @@ import CONSTANTS from '../CONSTANTS'
 import Config from './Config'
 import TitleContainer from './TitleContainer'
 import Page from './Page'
-import { replaceAll, isHTMLElement, px2number, smartClone } from '../utils'
+import { replaceAll, isHTMLElement, px2number, deepClone } from '../utils'
 import Route from './Route'
 
 class Core {
@@ -373,7 +373,7 @@ class Core {
      * 获取全局的传递数据
      */
     getGlobalPayload() {
-        return smartClone(this.#payloadStorage[CONSTANTS.PAYLOAD_GLOBAL_NAME])
+        return deepClone(this.#payloadStorage[CONSTANTS.PAYLOAD_GLOBAL_NAME])
     }
     /**
      * 修改全局的传递数据
@@ -390,7 +390,7 @@ class Core {
         if (!this.#payloadStorage.hasOwnProperty(pageId)) {
             throw new Error(`错误的pageId`)
         }
-        return smartClone(this.#payloadStorage[pageId])
+        return deepClone(this.#payloadStorage[pageId])
     }
     /**
      * 修改标签页的传递数据
