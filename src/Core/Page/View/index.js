@@ -36,11 +36,11 @@ class View extends SuperView {
             this.#sandboxMode = true
         }
         if (el.attachEvent) {
-            el.attachEvent('onload', event => {
+            el.attachEvent('onload', (event) => {
                 this.#iframeLoad(event)
             })
         } else {
-            el.addEventListener('load', event => {
+            el.addEventListener('load', (event) => {
                 this.#iframeLoad(event)
             })
         }
@@ -121,9 +121,8 @@ class View extends SuperView {
         if (this.crossOrigin) {
             return
         }
-        let iframeWindow = this.element.contentWindow
-        message = JSON.stringify(message)
-        iframeWindow.postMessage(message, '*')
+        const iframeWindow = this.element.contentWindow
+        iframeWindow.postMessage(message.toString(), '*')
     }
 }
 

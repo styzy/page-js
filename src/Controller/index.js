@@ -1,6 +1,7 @@
 import CONSTANTS from '../CONSTANTS'
 import Core from '../Core'
 import Logger from '../Logger'
+import Message from '../Message'
 
 class Controller {
     static get version() {
@@ -160,19 +161,17 @@ class Controller {
     }
     /**
      * 发送消息
-     * @param {Any} payload
+     * @param {Any} data
      * @param {String} pageId
      */
     postMessage(payload, pageId = '') {
         try {
-            let message = {
-                type: CONSTANTS.POST_MESSAGE_TYPE,
-                from: '',
-                to: pageId,
-                data: payload
-            }
-            message = JSON.stringify(message)
-            window.postMessage(message, '*')
+            const message = new Message()
+
+            message.to = pageId
+            message.payload = payload
+
+            window.postMessage(message.toString(), '*')
         } catch (error) {
             this.#exceptionHandler(`发送消息`, error)
         }

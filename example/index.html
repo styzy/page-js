@@ -172,7 +172,8 @@
                     onLimit: function (limit) {
                         console.log('onLimit: ', limit)
                     },
-                    onMessage: function (message) {
+                    onMessage: function (data, message) {
+                        console.log('onMessage: ', data)
                         console.log('onMessage: ', message)
                     },
                     globalRoute: {

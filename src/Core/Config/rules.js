@@ -51,7 +51,7 @@ const rules = {
     onMessage: {
         default: null,
         type: Function,
-        desc: '收到消息回调，标签页面向框架发送消息时触发，参数：message'
+        desc: '收到消息回调，标签页面向框架发送消息时触发，会返回两个参数，第一个参数为payload,即传递的数据，第二个参数为message消息体，包含from，to，type和payload，为了保证数据安全，message的各项参数处于冻结状态，无法修改'
     },
     // 全局荷载
     globalData: {

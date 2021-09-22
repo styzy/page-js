@@ -26,12 +26,12 @@
         <script>
             window.init = function (page, globalPayload) {
                 window.page = page
-                page.setMessageReceiver(function (message) {
+                page.setMessageReceiver(function (payload, message) {
                     var el_log_ctn = document.querySelector('#messageLogCtn')
                     var el_log = document.createElement('div')
                     var time = new Date()
                     el_log.className = 'log'
-                    el_log.innerText = '时间：' + getTime(time) + '\n' + '消息：' + message.data + '\n' + '来源：' + message.from
+                    el_log.innerText = '时间：' + getTime(time) + '\n' + '消息：' + payload + '\n' + '来源：' + message.from
                     if (el_log_ctn.childNodes.length) {
                         el_log_ctn.insertBefore(el_log, el_log_ctn.childNodes[0])
                     } else {
