@@ -1,5 +1,6 @@
 import CONSTANTS from '../../CONSTANTS'
 import { deepClone } from '../../utils'
+import Message from '../../Message'
 
 class Controller {
     #isChild = window.self !== window.top
@@ -69,9 +70,9 @@ class Controller {
 
         window.addEventListener('message', (nativeMessage) => {
             let message = nativeMessage.data
-            if (message && typeof message === 'string') {
+            if (message) {
                 try {
-                    message = JSON.parse(message)
+                    message = new Message(message)
                 } catch (error) {
                     return
                 }
@@ -79,9 +80,7 @@ class Controller {
                 return
             }
 
-            if (message.type === CONSTANTS.POST_MESSAGE_TYPE) {
-                this.#messageReceiver && this.#messageReceiver(message)
-            }
+            this.#messageReceiver && this.#messageReceiver(message.payload, message)
         })
     }
     open(options) {
@@ -132,17 +131,16 @@ class Controller {
     focus(...args) {
         return this.#parentController.focus(...args)
     }
-    postMessage(data, pageId) {
+    postMessage(payload, pageId) {
         if (!this.isPageChild) return
 
-        let message = {
-            type: CONSTANTS.POST_MESSAGE_TYPE,
-            from: this.#pageId,
-            to: pageId,
-            data: data
-        }
-        message = JSON.stringify(message)
-        window.top.postMessage(message, '*')
+        const message = new Message()
+
+        message.from = this.#pageId
+        message.to = pageId
+        message.payload = payload
+
+        window.top.postMessage(message.toString(), '*')
     }
     setMessageReceiver(receiver) {
         if (receiver instanceof Function) {

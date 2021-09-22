@@ -1,9 +1,10 @@
 import CONSTANTS from '../CONSTANTS'
+import { replaceAll, isHTMLElement, px2number, deepClone } from '../utils'
 import Config from './Config'
 import TitleContainer from './TitleContainer'
 import Page from './Page'
-import { replaceAll, isHTMLElement, px2number, deepClone } from '../utils'
 import Route from './Route'
+import Message from '../Message'
 
 class Core {
     #controller
@@ -168,24 +169,23 @@ class Core {
     #setMessageReceiver() {
         window.addEventListener('message', (nativeMessage) => {
             let message = nativeMessage.data
-            if (message && typeof message === 'string') {
+            if (message) {
                 try {
-                    message = JSON.parse(message)
+                    message = new Message(message)
                 } catch (error) {
                     return
                 }
             } else {
                 return
             }
-            if (message.type === CONSTANTS.POST_MESSAGE_TYPE) {
-                let pageId = message.to,
-                    page = this.pages[pageId]
-                if (pageId && page) {
-                    page.postMessage(message)
-                } else {
-                    if (this.config.onMessage instanceof Function) {
-                        this.config.onMessage(message)
-                    }
+
+            const pageId = message.to,
+                page = this.pages[pageId]
+            if (pageId && page) {
+                page.postMessage(message)
+            } else {
+                if (this.config.onMessage instanceof Function) {
+                    this.config.onMessage(message.payload, message)
                 }
             }
         })
