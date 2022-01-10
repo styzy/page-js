@@ -98,7 +98,7 @@ class Route {
                     url = this.URL.host + this.URL.pathname
                     break
                 case CONSTANTS.RULES.REPEAT_RULE.ORIGIN_PATHNAME_SEARCH:
-                    url = this.URL.host + this.URL.pathname + +this.URL.search
+                    url = this.URL.host + this.URL.pathname + this.URL.search
                     break
                 case CONSTANTS.RULES.REPEAT_RULE.ALL:
                     url = this.URL.href
