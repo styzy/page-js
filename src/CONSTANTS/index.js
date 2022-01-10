@@ -1,7 +1,7 @@
 const NAME_SPACE = `page`
 const CONSTANTS = {
     // 版本号
-    VERSION: `1.4.1`,
+    VERSION: `1.4.2`,
     // 选择器
     SELECTOR: {
         // 路由元素
@@ -91,6 +91,8 @@ const CONSTANTS = {
         ROUTE_CLOSE_ENABLE: `${NAME_SPACE}-close-enable`,
         // 路由是否允许重复
         ROUTE_REPEAT_ENABLE: `${NAME_SPACE}-repeat-enable`,
+        // 路由重复验证规则
+        ROUTE_REPEAT_RULE: `${NAME_SPACE}-repeat-rule`,
         // 路由打开钩子
         ROUTE_ON_LOAD: `${NAME_SPACE}-onload`,
         // 路由关闭钩子

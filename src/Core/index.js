@@ -102,6 +102,7 @@ class Core {
                     titleIcon: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_TITLE_ICON)),
                     closeEnable: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_CLOSE_ENABLE)),
                     repeatEnable: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_REPEAT_ENABLE)),
+                    repeatRule: this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_REPEAT_RULE),
                     autoSyncHeight: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_AUTO_SYNC_HEIGHT) === 'false'),
                     onLoad: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_ON_LOAD)),
                     onClose: getEvalValue(this.getAttribute(CONSTANTS.ATTRIBUTE_NAME.ROUTE_ON_CLOSE))
